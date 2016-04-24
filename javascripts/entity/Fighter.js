@@ -82,6 +82,18 @@ define([
 		else if(this.state === 'standing_turnaround_start' && horizontalDir === this.facingDir && stateHasLooped) {
 			this._setState('running_turnaround_end');
 		}
+		//standing_turnaround_start -(cancel)-> standing_turnaround_start
+		else if(this.state === 'standing_turnaround_start' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			//TODO buffer input for double-turnarounds?
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//standing_turnaround_end -(cancel)-> standing_turnaround_start
+		else if(this.state === 'standing_turnaround_end' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			//TODO buffer input for double-turnarounds?
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
 
 		//RUNNING TURNAROUND
 		//running --> running_turnaround_start
@@ -139,6 +151,35 @@ define([
 		else if(this.state === 'crouch_end' && stateHasLooped) {
 			this._setState('standing');
 		}
+		//crouch_start -(cancels)-> crouch_end
+		else if(this.state === 'crouch_start' && verticalDir !== -1 && this._stateIsCancelableBy('crouch_end')) {
+			this._setState('crouch_end');
+		}
+		//crouch_end -(cancels)-> run_start
+		else if(this.state === 'crouch_end' && horizontalDir === this.facingDir && this._stateIsCancelableBy('run_start')) {
+			this._setState('run_start');
+		}
+		//crouch_end -(cancels)-> standing_turnaround_start
+		else if(this.state === 'crouch_end' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//running -(cancels)-> crouch_start
+		else if(this.state === 'running' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
+			this._setState('crouch_start');
+		}
+		//run_end -(cancels)-> crouch_start
+		else if(this.state === 'run_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
+			this._setState('crouch_start');
+		}
+		//running_turnaround_end -(cancels)-> crouch_start
+		else if(this.state === 'running_turnaround_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
+			this._setState('crouch_start');
+		}
+		//standing_turnaround_end -(cancels)-> crouch_start
+		else if(this.state === 'standing_turnaround_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
+			this._setState('crouch_start');
+		}
 
 		else {
 			return false;
@@ -150,44 +191,33 @@ define([
 		if(this.state === 'standing' || this.state === 'crouch_start' ||
 			this.state === 'crouching' || this.state === 'crouch_end' || this.state === 'run_end' ||
 			this.state === 'standing_turnaround_end') {
+			var deceleration = moveData[this.state].deceleration || moveData.standing.deceleration;
 			if(this.vel.x > 0) {
-				this.vel.x = Math.max(0, this.vel.x - moveData.standing.deceleration / 60);
+				this.vel.x = Math.max(0, this.vel.x - deceleration / 60);
 			}
 			else if(this.vel.x < 0) {
-				this.vel.x = Math.min(0, this.vel.x + moveData.standing.deceleration / 60);
+				this.vel.x = Math.min(0, this.vel.x + deceleration / 60);
 			}
 		}
 		//increase speed while running
 		else if(this.state === 'run_start' || this.state === 'running' ||
-			this.state === 'running_turnaround_end') {
+			this.state === 'running_turnaround_end' ||
+			this.state === 'standing_turnaround_start' ||
+			this.state === 'running_turnaround_start') {
+			var maxSpeed = moveData[this.state].maxSpeed || moveData.running.maxSpeed;
+			var acceleration = moveData[this.state].acceleration || moveData.running.acceleration;
 			//if we're running over top speed, slow down (slowly)
-			if(this.vel.x * this.facingDir > moveData.running.maxSpeed) {
-				this.vel.x -= this.facingDir * moveData.running.deceleration / 60;
-				if(this.vel.x * this.facingDir < moveData.running.maxSpeed) {
-					this.vel.x = this.facingDir * moveData.running.maxSpeed;
+			if(this.vel.x * this.facingDir > maxSpeed) {
+				this.vel.x -= this.facingDir * 600 / 60;
+				if(this.vel.x * this.facingDir < maxSpeed) {
+					this.vel.x = this.facingDir * maxSpeed;
 				}
 			}
 			//otherwise, speed up
 			else {
-				this.vel.x += this.facingDir * moveData.running.acceleration / 60;
-				if(this.vel.x * this.facingDir > moveData.running.maxSpeed) {
-					this.vel.x = this.facingDir * moveData.running.maxSpeed;
-				}
-			}
-		}
-		else if(this.state === 'standing_turnaround_start' || this.state === 'running_turnaround_start') {
-			//if we're running over top speed, slow down (slowly)
-			if(this.vel.x * this.facingDir > moveData[this.state].maxSpeed) {
-				this.vel.x -= this.facingDir * moveData[this.state].deceleration / 60;
-				if(this.vel.x * this.facingDir < moveData[this.state].maxSpeed) {
-					this.vel.x = this.facingDir * moveData[this.state].maxSpeed;
-				}
-			}
-			//otherwise, speed up
-			else {
-				this.vel.x += this.facingDir * moveData[this.state].acceleration / 60;
-				if(this.vel.x * this.facingDir > moveData[this.state].maxSpeed) {
-					this.vel.x = this.facingDir * moveData[this.state].maxSpeed;
+				this.vel.x += this.facingDir * acceleration / 60;
+				if(this.vel.x * this.facingDir > maxSpeed) {
+					this.vel.x = this.facingDir * maxSpeed;
 				}
 			}
 		}
@@ -231,6 +261,7 @@ define([
 		draw.sprite('fighter', displayedFrame, this.pos.x, this.pos.y, { flip: this.facingDir < 0 });
 		draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
 		draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 25, { fontSize: 10, color: '#aaa', align: 'center' });
+		draw.text('Speed = ' + Math.floor(Math.abs(this.vel.x)), this.pos.x, this.pos.y + 40, { fontSize: 10, color: '#aaa', align: 'center' });
 	};
 	return Fighter;
 });
