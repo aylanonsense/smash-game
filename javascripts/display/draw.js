@@ -11,6 +11,9 @@ define([
 ) {
 	var DEFAULT_COLOR = '#fff';
 	var DEFAULT_THICKNESS = 1;
+	var DEFAULT_FONT = 'Arial';
+	var DEFAULT_FONT_SIZE = 12;
+	var DEFAULT_FONT_ALIGN = 'left';
 
 	var ctx = config.RENDER ? canvas.getContext("2d") : null;
 	var sprites = {};
@@ -135,6 +138,20 @@ define([
 				}
 				if(result.shouldStroke) {
 					ctx.stroke();
+				}
+			}
+		},
+		text: function(txt, x, y, params) {
+			if(config.RENDER) {
+				var result = applyDrawParams(params, 'fill');
+				ctx.font = (result.zoom * (params && params.fontSize || DEFAULT_FONT_SIZE)) + 'px ' +
+					(params && params.font || DEFAULT_FONT);
+				ctx.textAlign = params && params.align || DEFAULT_FONT_ALIGN;
+				if(result.shouldFill) {
+					ctx.fillText(txt, result.zoom * x + result.offset.x, result.zoom * y + result.offset.y);
+				}
+				if(result.shouldStroke) {
+					ctx.strokeText(txt, result.zoom * x + result.offset.x, result.zoom * y + result.offset.y);
 				}
 			}
 		},

@@ -21,106 +21,129 @@ define([
 		this.framesInCurrentState++;
 	};
 	Fighter.prototype.handleInput = function(inputs, inputState) {
+		var numUpdates, maxStateUpdates = 10;
 		for(var i = 0; i < inputs.length; i++) {
 			this.inputState = inputs[i].state;
-			this._updateState(inputs[i]);
+			for(numUpdates = 0; numUpdates < maxStateUpdates; numUpdates++) {
+				if(!this._updateState(inputs[i])) {
+					break;
+				}
+			}
 		}
 		this.inputState = inputState;
-		this._updateState(null);
+		for(numUpdates = 0; numUpdates < maxStateUpdates; numUpdates++) {
+			if(!this._updateState(null)) {
+				break;
+			}
+		}
 	};
 	Fighter.prototype._updateState = function(input) {
-		//standing_turnaround_end -> standing
-		if(this.state === 'standing_turnaround_end' && this.framesInCurrentState >= moveData.standing_turnaround_end.totalFrames) {
-			this._setState('standing');
-		}
+		var stateHasLooped = this.framesInCurrentState >= moveData[this.state].totalFrames;
+		var horizontalDir = this.inputState.horizontalDir;
+		var verticalDir = this.inputState.verticalDir;
 
-		//running_turnaround_end -> running
-		if(this.state === 'running_turnaround_end' && this.framesInCurrentState >= moveData.running_turnaround_end.totalFrames) {
+		//STANDING <--> RUNNING
+		//standing --> run_start
+		if(this.state === 'standing' && horizontalDir === this.facingDir) {
+			this._setState('run_start');
+		}
+		//run_start --> running
+		else if(this.state === 'run_start' && stateHasLooped) {
 			this._setState('running');
 		}
-
-		//crouch_start -> crouching
-		if(this.state === 'crouch_start' && this.framesInCurrentState >= moveData.crouch_start.totalFrames) {
-			this._setState('crouching');
+		//running --> run_end
+		else if(this.state === 'running' && horizontalDir === 0) {
+			this._setState('run_end');
 		}
-
-		//crouch_end -> standing
-		if(this.state === 'crouch_end' && this.framesInCurrentState >= moveData.crouch_end.totalFrames) {
+		//run_end --> standing
+		else if(this.state === 'run_end' && stateHasLooped) {
 			this._setState('standing');
 		}
+		//run_start -(cancel)-> run_end
+		else if(this.state === 'run_start' && horizontalDir === 0 && this._stateIsCancelableBy('run_end')) {
+			this._setState('run_end', moveData.run_end.earlyCancelFrame);
+		}
 
-		//run_start -> running
-		if(this.state === 'run_start' && this.framesInCurrentState >= moveData.run_start.totalFrames) {
+		//STANDING TURNAROUND
+		//standing --> standing_turnaround_start
+		else if(this.state === 'standing' && horizontalDir === -this.facingDir) {
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//standing_turnaround_start --> standing_turnaround_end
+		else if(this.state === 'standing_turnaround_start' && horizontalDir !== this.facingDir && stateHasLooped) {
+			this._setState('standing_turnaround_end');
+		}
+		//standing_turnaround_end --> standing
+		else if(this.state === 'standing_turnaround_end' && stateHasLooped) {
+			this._setState('standing');
+		}
+		//standing_turnaround_start --> running_turnaround_end
+		else if(this.state === 'standing_turnaround_start' && horizontalDir === this.facingDir && stateHasLooped) {
+			this._setState('running_turnaround_end');
+		}
+
+		//RUNNING TURNAROUND
+		//running --> running_turnaround_start
+		else if(this.state === 'running' && horizontalDir === -this.facingDir) {
+			this.facingDir = horizontalDir;
+			this._setState('running_turnaround_start');
+		}
+		//running_turnaround_start --> running_turnaround_end
+		else if(this.state === 'running_turnaround_start' && horizontalDir === this.facingDir && stateHasLooped) {
+			this._setState('running_turnaround_end');
+		}
+		//running_turnaround_end --> running
+		else if(this.state === 'running_turnaround_end' && stateHasLooped) {
 			this._setState('running');
 		}
-
-		//run_end -> standing
-		if(this.state === 'run_end' && this.framesInCurrentState >= moveData.run_end.totalFrames) {
-			this._setState('standing');
+		//running_turnaround_start --> standing_turnaround_end
+		else if(this.state === 'running_turnaround_start' && horizontalDir !== this.facingDir && stateHasLooped) {
+			this._setState('standing_turnaround_end');
+		}
+		//run_end -(cancel)-> running_turnaround_start
+		else if(this.state === 'run_end' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('running_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('running_turnaround_start');
+		}
+		//run_end -(cancel)-> standing_turnaround_start
+		else if(this.state === 'run_end' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//running_turnaround_start -(cancel)-> standing_turnaround_start
+		else if(this.state === 'running_turnaround_start' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//running_turnaround_end -(cancels)-> running_turnaround_start
+		else if(this.state === 'running_turnaround_end' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('running_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('running_turnaround_start');
 		}
 
-		//standing_turnaround_start -> standing_turnaround_end or running_turnaround_end
-		if(this.state === 'standing_turnaround_start' && this.framesInCurrentState >= moveData.standing_turnaround_start.totalFrames) {
-			if(this.facingDir !== this.inputState.horizontalDir) {
-				this._setState('standing_turnaround_end');
-			}
-			else {
-				this._setState('running_turnaround_end');
-			}
-		}
-
-		//running_turnaround_start -> standing_turnaround_end or running_turnaround_end
-		if(this.state === 'running_turnaround_start' && this.framesInCurrentState >= moveData.running_turnaround_start.totalFrames) {
-			if(this.facingDir !== this.inputState.horizontalDir) {
-				this._setState('standing_turnaround_end');
-			}
-			else {
-				this._setState('running_turnaround_end');
-			}
-		}
-
-		//crouching -> crouch_end
-		if(this.state === 'crouching' && this.inputState.verticalDir >= 0 &&
-			(!input || input.change === 'verticalDir')) {
-			this._setState('crouch_end');
-		}
-
-		//standing -> crouch_start
-		if(this.state === 'standing' && this.inputState.verticalDir < 0 &&
-			(!input || input.change === 'verticalDir')) {
+		//STANDING <--> CROUCHING
+		//standing --> crouch_start
+		else if(this.state === 'standing' && verticalDir === -1) {
 			this._setState('crouch_start');
 		}
-
-		//standing -> run_start or standing_turnaround_start
-		if(this.state === 'standing' && this.inputState.horizontalDir !== 0 &&
-			(!input || input.change === 'horizontalDir')) {
-			if(this.facingDir !== this.inputState.horizontalDir) {
-				this._setState('standing_turnaround_start');
-				this.facingDir = this.inputState.horizontalDir;
-			}
-			else {
-				this._setState('run_start');
-			}
+		//crouch_start --> crouching
+		else if(this.state === 'crouch_start' && stateHasLooped) {
+			this._setState('crouching');
+		}
+		//crouching --> crouch_end
+		else if(this.state === 'crouching' && verticalDir !== -1) {
+			this._setState('crouch_end');
+		}
+		//crouch_end --> standing
+		else if(this.state === 'crouch_end' && stateHasLooped) {
+			this._setState('standing');
 		}
 
-		//run_end -> running_turnaround_start
-		if(this.state === 'run_end' && this.inputState.horizontalDir === -this.facingDir &&
-			(!input || input.change === 'horizontalDir')) {
-			this._setState('running_turnaround_start');
-			this.facingDir = this.inputState.horizontalDir;
+		else {
+			return false;
 		}
-
-		//running -> run_end or running_turnaround_start
-		if(this.state === 'running' && this.inputState.horizontalDir !== this.facingDir &&
-			(!input || input.change === 'horizontalDir')) {
-			if(this.inputState.horizontalDir === 0) {
-				this._setState('run_end');
-			}
-			else {
-				this._setState('running_turnaround_start');
-				this.facingDir = this.inputState.horizontalDir;
-			}
-		}
+		return true;
 	};
 	Fighter.prototype.move = function(t) {
 		//slide to a stop while standing
@@ -168,11 +191,30 @@ define([
 				}
 			}
 		}
+		else {
+			console.log(this.state + ' has no physics associated with it');
+		}
 		this.pos.x += this.vel.x / 60;
 	};
-	Fighter.prototype._setState = function(state) {
+	Fighter.prototype._setState = function(state, frame) {
 		this.state = state;
-		this.framesInCurrentState = 0;
+		this.framesInCurrentState = frame || 0;
+	};
+	Fighter.prototype._stateIsCancelableBy = function(action) {
+		if(moveData[this.state].cancels && moveData[this.state].cancels.indexOf(action) >= 0) {
+			return true;
+		}
+		else {
+			var frames = this.framesInCurrentState % moveData[this.state].totalFrames;
+			for(var i = 0; i < moveData[this.state].animation.length; i++) {
+				frames -= moveData[this.state].animation[i].frames;
+				if(frames < 0) {
+					return moveData[this.state].animation[i].cancels &&
+					moveData[this.state].animation[i].cancels.indexOf(action) >= 0;
+				}
+			}
+			return false;
+		}
 	};
 	Fighter.prototype.render = function() {
 		//figure out frame
@@ -186,11 +228,9 @@ define([
 				break;
 			}
 		}
-		var colors = {
-			standing: '#f00',
-			running: '#00f'
-		};
 		draw.sprite('fighter', displayedFrame, this.pos.x, this.pos.y, { flip: this.facingDir < 0 });
+		draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
+		draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 25, { fontSize: 10, color: '#aaa', align: 'center' });
 	};
 	return Fighter;
 });

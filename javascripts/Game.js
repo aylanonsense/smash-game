@@ -19,13 +19,8 @@ define([
 			facing: 1,
 			inputState: fighterInputs.getState()
 		});
-		var player2 = new Fighter({
-			x: 200,
-			facing: -1,
-			inputState: { horizontalDir: 0, verticalDir: 0 }
-		});
 		this.player = player1;
-		this.entities = [ player2, player1 ];
+		this.entities = [ player1 ];
 		camera.pos.y = -500;
 	}
 	Game.prototype.update = function(t) {

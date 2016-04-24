@@ -24,6 +24,7 @@ define(function() {
 			maxSpeed: 275,
 			acceleration: 1200,
 			deceleration: 600,
+			cancels: [ 'standing_turnaround_start' ],
 			animation: [
 				{ sprite: 22, frames: 8 },
 				{ sprite: 23, frames: 8 }
@@ -32,7 +33,7 @@ define(function() {
 		running_turnaround_end: {
 			animation: [
 				{ sprite: 24, frames: 8 },
-				{ sprite: 25, frames: 8 }
+				{ sprite: 25, frames: 8, cancels: [ 'running_turnaround_start' ] }
 			]
 		},
 		crouch_start: {
@@ -56,7 +57,7 @@ define(function() {
 		run_start: {
 			animation: [
 				{ sprite: 10, frames: 6 },
-				{ sprite: 11, frames: 6 }
+				{ sprite: 11, frames: 6, cancels: [ 'run_end' ] }
 			]
 		},
 		running: {
@@ -71,10 +72,11 @@ define(function() {
 			]
 		},
 		run_end: {
+			earlyCancelFrame: 6,
 			animation: [
-				{ sprite: 16, frames: 6 },
-				{ sprite: 17, frames: 6 },
-				{ sprite: 18, frames: 6 }
+				{ sprite: 16, frames: 6, cancels: [ 'running_turnaround_start' ] },
+				{ sprite: 17, frames: 6, cancels: [ 'running_turnaround_start' ] },
+				{ sprite: 18, frames: 6, cancels: [ 'standing_turnaround_start' ] }
 			]
 		}
 	};
