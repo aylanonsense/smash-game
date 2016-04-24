@@ -12,8 +12,8 @@ define([
 	function Fighter(params) {
 		Entity.call(this, extend(params, {}));
 		this.inputState = params.inputState;
-		this.facingDir = 1;
-		this.state = 'standing'; //states: standing, running
+		this.facingDir = params.facing || 0;
+		this.state = 'standing';
 		this.framesInCurrentState = 0;
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
@@ -29,6 +29,16 @@ define([
 		this._updateState(null);
 	};
 	Fighter.prototype._updateState = function(input) {
+		//standing_turnaround_end -> standing
+		if(this.state === 'standing_turnaround_end' && this.framesInCurrentState >= moveData.standing_turnaround_end.totalFrames) {
+			this._setState('standing');
+		}
+
+		//running_turnaround_end -> running
+		if(this.state === 'running_turnaround_end' && this.framesInCurrentState >= moveData.running_turnaround_end.totalFrames) {
+			this._setState('running');
+		}
+
 		//crouch_start -> crouching
 		if(this.state === 'crouch_start' && this.framesInCurrentState >= moveData.crouch_start.totalFrames) {
 			this._setState('crouching');
@@ -39,9 +49,34 @@ define([
 			this._setState('standing');
 		}
 
+		//run_start -> running
+		if(this.state === 'run_start' && this.framesInCurrentState >= moveData.run_start.totalFrames) {
+			this._setState('running');
+		}
+
 		//run_end -> standing
 		if(this.state === 'run_end' && this.framesInCurrentState >= moveData.run_end.totalFrames) {
 			this._setState('standing');
+		}
+
+		//standing_turnaround_start -> standing_turnaround_end or running_turnaround_end
+		if(this.state === 'standing_turnaround_start' && this.framesInCurrentState >= moveData.standing_turnaround_start.totalFrames) {
+			if(this.facingDir !== this.inputState.horizontalDir) {
+				this._setState('standing_turnaround_end');
+			}
+			else {
+				this._setState('running_turnaround_end');
+			}
+		}
+
+		//running_turnaround_start -> standing_turnaround_end or running_turnaround_end
+		if(this.state === 'running_turnaround_start' && this.framesInCurrentState >= moveData.running_turnaround_start.totalFrames) {
+			if(this.facingDir !== this.inputState.horizontalDir) {
+				this._setState('standing_turnaround_end');
+			}
+			else {
+				this._setState('running_turnaround_end');
+			}
 		}
 
 		//crouching -> crouch_end
@@ -56,23 +91,42 @@ define([
 			this._setState('crouch_start');
 		}
 
-		//standing -> running
+		//standing -> run_start or standing_turnaround_start
 		if(this.state === 'standing' && this.inputState.horizontalDir !== 0 &&
 			(!input || input.change === 'horizontalDir')) {
-			this._setState('running');
+			if(this.facingDir !== this.inputState.horizontalDir) {
+				this._setState('standing_turnaround_start');
+				this.facingDir = this.inputState.horizontalDir;
+			}
+			else {
+				this._setState('run_start');
+			}
+		}
+
+		//run_end -> running_turnaround_start
+		if(this.state === 'run_end' && this.inputState.horizontalDir === -this.facingDir &&
+			(!input || input.change === 'horizontalDir')) {
+			this._setState('running_turnaround_start');
 			this.facingDir = this.inputState.horizontalDir;
 		}
 
-		//running -> run_end
-		if(this.state === 'running' && this.inputState.horizontalDir === 0 &&
+		//running -> run_end or running_turnaround_start
+		if(this.state === 'running' && this.inputState.horizontalDir !== this.facingDir &&
 			(!input || input.change === 'horizontalDir')) {
-			this._setState('run_end');
+			if(this.inputState.horizontalDir === 0) {
+				this._setState('run_end');
+			}
+			else {
+				this._setState('running_turnaround_start');
+				this.facingDir = this.inputState.horizontalDir;
+			}
 		}
 	};
 	Fighter.prototype.move = function(t) {
 		//slide to a stop while standing
 		if(this.state === 'standing' || this.state === 'crouch_start' ||
-			this.state === 'crouching' || this.state === 'crouch_end' || this.state === 'run_end') {
+			this.state === 'crouching' || this.state === 'crouch_end' || this.state === 'run_end' ||
+			this.state === 'standing_turnaround_end') {
 			if(this.vel.x > 0) {
 				this.vel.x = Math.max(0, this.vel.x - moveData.standing.deceleration / 60);
 			}
@@ -81,7 +135,8 @@ define([
 			}
 		}
 		//increase speed while running
-		else if(this.state === 'running') {
+		else if(this.state === 'run_start' || this.state === 'running' ||
+			this.state === 'running_turnaround_end') {
 			//if we're running over top speed, slow down (slowly)
 			if(this.vel.x * this.facingDir > moveData.running.maxSpeed) {
 				this.vel.x -= this.facingDir * moveData.running.deceleration / 60;
@@ -94,6 +149,22 @@ define([
 				this.vel.x += this.facingDir * moveData.running.acceleration / 60;
 				if(this.vel.x * this.facingDir > moveData.running.maxSpeed) {
 					this.vel.x = this.facingDir * moveData.running.maxSpeed;
+				}
+			}
+		}
+		else if(this.state === 'standing_turnaround_start' || this.state === 'running_turnaround_start') {
+			//if we're running over top speed, slow down (slowly)
+			if(this.vel.x * this.facingDir > moveData[this.state].maxSpeed) {
+				this.vel.x -= this.facingDir * moveData[this.state].deceleration / 60;
+				if(this.vel.x * this.facingDir < moveData[this.state].maxSpeed) {
+					this.vel.x = this.facingDir * moveData[this.state].maxSpeed;
+				}
+			}
+			//otherwise, speed up
+			else {
+				this.vel.x += this.facingDir * moveData[this.state].acceleration / 60;
+				if(this.vel.x * this.facingDir > moveData[this.state].maxSpeed) {
+					this.vel.x = this.facingDir * moveData[this.state].maxSpeed;
 				}
 			}
 		}

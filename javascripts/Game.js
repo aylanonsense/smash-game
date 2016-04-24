@@ -15,10 +15,13 @@ define([
 		//create players
 		fighterInputs.popRecentInputs();
 		var player1 = new Fighter({
-			velX: -60,
+			x: -200,
+			facing: 1,
 			inputState: fighterInputs.getState()
 		});
 		var player2 = new Fighter({
+			x: 200,
+			facing: -1,
 			inputState: { horizontalDir: 0, verticalDir: 0 }
 		});
 		this.player = player1;
