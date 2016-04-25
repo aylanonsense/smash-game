@@ -23,7 +23,7 @@ define({
 		37: 'LEFT', 65: 'LEFT', //left arrow / a key
 		40: 'DOWN', 83: 'DOWN', //down arrow / s key
 		39: 'RIGHT', 68: 'RIGHT', //right arrow / d key
-		// 32: 'JUMP', //space bar
+		32: 'JUMP', //space bar
 		//90: 'LIGHT', 74: 'LIGHT', //z key / j key
 		//88: 'HEAVY', 75: 'HEAVY', //x key / k key
 		//67: 'SPECIAL', 76: 'SPECIAL', //c key / l key
@@ -37,4 +37,10 @@ define({
 	CONSTANT_TIME_PER_FRAME: false,
 	FRAMES_PER_SECOND: null, //null will use requestAnimationFrame
 	TIME_SCALE: 1.0, //2.0 will run twice as fast, 0.5 will run at half speed
+
+	//debug
+	SHOW_FIGHTER_DEBUG_DATA: false,
+
+	//gameplay
+	MAX_MOVEMENT_PER_STEP: 10
 });

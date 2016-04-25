@@ -21,7 +21,6 @@ define([
 			if(dir !== horizontalDir) {
 				horizontalDir = dir;
 				inputs.push({
-					change: 'horizontalDir',
 					state: getState(),
 					prevState: prevState
 				});
@@ -37,11 +36,20 @@ define([
 			if(dir !== verticalDir) {
 				verticalDir = dir;
 				inputs.push({
-					change: 'verticalDir',
 					state: getState(),
 					prevState: prevState
 				});
 			}
+		}
+
+		//jump
+		else if(key === 'JUMP') {
+			inputs.push({
+				key: key,
+				isDown: isDown,
+				state: getState(),
+				prevState: prevState
+			});
 		}
 	});
 

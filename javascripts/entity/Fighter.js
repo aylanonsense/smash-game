@@ -1,20 +1,26 @@
 define([
+	'config',
 	'entity/Entity',
 	'util/extend',
 	'entity/moveData',
 	'display/draw'
 ], function(
+	config,
 	Entity,
 	extend,
 	moveData,
 	draw
 ) {
 	function Fighter(params) {
-		Entity.call(this, extend(params, {}));
+		Entity.call(this, extend(params, {
+			height: 60,
+			width: 54
+		}));
 		this.inputState = params.inputState;
 		this.facingDir = params.facing || 0;
-		this.state = 'standing';
+		this.state = 'airborne';
 		this.framesInCurrentState = 0;
+		this.supportingPlatform = null;
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function(t) {
@@ -181,17 +187,56 @@ define([
 			this._setState('crouch_start');
 		}
 
-		else {
-			return false;
+		//LANDING
+		//ground_landing --> standing
+		else if(this.state === 'ground_landing' && stateHasLooped) {
+			this._setState('standing');
 		}
+
+		//JUMPING
+		//(many grounded states) --> jump_takeoff
+		else if((this.state === 'standing' || this.state === 'running' ||
+			this.state === 'standing_turnaround_start' || this.state === 'standing_turnaround_end' ||
+			this.state === 'running_turnaround_start' || this.state === 'running_turnaround_end' ||
+			this.state === 'crouch_start' || this.state === 'crouching' ||
+			this.state === 'crouch_end' || this.state === 'run_start' ||
+			this.state === 'run_end') && input && input.key === 'JUMP' && input.isDown) {
+			this._setState('jump_takeoff');
+		}
+		//jump_takeoff --> airborne
+		else if(this.state === 'jump_takeoff' && stateHasLooped) {
+			this.supportingPlatform = null;
+			this.vel.y = -moveData.jump_takeoff.jumpSpeed;
+			this._setState('airborne');
+		}
+		//ground_landing -(cancels)-> jump_takeoff
+		if(this.state === 'ground_landing' && this._stateIsCancelableBy('jump_takeoff') &&
+			input && input.key === 'JUMP' && input.isDown) {
+			this._setState('jump_takeoff');
+		}
+		//ground_landing -(cancels)-> run_start
+		if(this.state === 'ground_landing' && horizontalDir === this.facingDir && this._stateIsCancelableBy('run_start')) {
+			this._setState('run_start');
+		}
+		//ground_landing -(cancels)-> standing_turnaround_start
+		if(this.state === 'ground_landing' && horizontalDir === -this.facingDir && this._stateIsCancelableBy('standing_turnaround_start')) {
+			this.facingDir = horizontalDir;
+			this._setState('standing_turnaround_start');
+		}
+		//ground_landing -(cancels)-> crouching
+		if(this.state === 'ground_landing' && verticalDir === -1 && this._stateIsCancelableBy('crouching')) {
+			this._setState('crouching');
+		}
+
+		else { return false; }
 		return true;
 	};
-	Fighter.prototype.move = function(t) {
+	Fighter.prototype.move = function(t, platforms) {
+		var gravity = typeof moveData[this.state].gravity === 'number' ? moveData[this.state].gravity : moveData.airborne.gravity;
+		var maxSpeed, acceleration, deceleration, aboveMaxSpeedDeceleration;
 		//slide to a stop while standing
-		if(this.state === 'standing' || this.state === 'crouch_start' ||
-			this.state === 'crouching' || this.state === 'crouch_end' || this.state === 'run_end' ||
-			this.state === 'standing_turnaround_end') {
-			var deceleration = moveData[this.state].deceleration || moveData.standing.deceleration;
+		if(moveData[this.state].physics === 'standing')  {
+			deceleration = typeof moveData[this.state].deceleration === 'number' ? moveData[this.state].deceleration : moveData.standing.deceleration;
 			if(this.vel.x > 0) {
 				this.vel.x = Math.max(0, this.vel.x - deceleration / 60);
 			}
@@ -200,15 +245,13 @@ define([
 			}
 		}
 		//increase speed while running
-		else if(this.state === 'run_start' || this.state === 'running' ||
-			this.state === 'running_turnaround_end' ||
-			this.state === 'standing_turnaround_start' ||
-			this.state === 'running_turnaround_start') {
-			var maxSpeed = moveData[this.state].maxSpeed || moveData.running.maxSpeed;
-			var acceleration = moveData[this.state].acceleration || moveData.running.acceleration;
+		else if(moveData[this.state].physics === 'running') {
+			maxSpeed = typeof moveData[this.state].maxSpeed === 'number' ? moveData[this.state].maxSpeed : moveData.running.maxSpeed;
+			acceleration = typeof moveData[this.state].acceleration === 'number' ? moveData[this.state].acceleration : moveData.running.acceleration;
+			aboveMaxSpeedDeceleration = typeof moveData[this.state].aboveMaxSpeedDeceleration === 'number' ? moveData[this.state].aboveMaxSpeedDeceleration : moveData.running.aboveMaxSpeedDeceleration;
 			//if we're running over top speed, slow down (slowly)
 			if(this.vel.x * this.facingDir > maxSpeed) {
-				this.vel.x -= this.facingDir * 600 / 60;
+				this.vel.x -= this.facingDir * aboveMaxSpeedDeceleration / 60;
 				if(this.vel.x * this.facingDir < maxSpeed) {
 					this.vel.x = this.facingDir * maxSpeed;
 				}
@@ -221,10 +264,137 @@ define([
 				}
 			}
 		}
-		else {
-			console.log(this.state + ' has no physics associated with it');
+		else if(moveData[this.state].physics === 'airborne') {
+			maxSpeed = typeof moveData[this.state].maxSpeed === 'number' ? moveData[this.state].maxSpeed : moveData.airborne.maxSpeed;
+			acceleration = typeof moveData[this.state].acceleration === 'number' ? moveData[this.state].acceleration : moveData.airborne.acceleration;
+			deceleration = typeof moveData[this.state].deceleration === 'number' ? moveData[this.state].deceleration : moveData.airborne.deceleration;
+			aboveMaxSpeedDeceleration = typeof moveData[this.state].aboveMaxSpeedDeceleration === 'number' ? moveData[this.state].aboveMaxSpeedDeceleration : moveData.airborne.aboveMaxSpeedDeceleration;
+			//if you're trying to move right
+			if(this.inputState.horizontalDir > 0) {
+				//if you're moving above max speed
+				if(this.vel.x > maxSpeed) {
+					this.vel.x -= aboveMaxSpeedDeceleration / 60;
+					if(this.vel.x < maxSpeed) {
+						this.vel.x = maxSpeed;
+					}
+				}
+				else {
+					//if you're moving above max speed the other way
+					if(this.vel.x < -maxSpeed) {
+						this.vel.x += Math.max(acceleration, aboveMaxSpeedDeceleration) / 60;
+					}
+					//if you're moving within reasonable speeds
+					else {
+						this.vel.x += acceleration / 60;
+					}
+					if(this.vel.x > maxSpeed) {
+						this.vel.x = maxSpeed;
+					}
+				}
+			}
+			//if you're trying to move left
+			else if(this.inputState.horizontalDir < 0) {
+				//if you're moving above max speed
+				if(this.vel.x < -maxSpeed) {
+					this.vel.x += aboveMaxSpeedDeceleration / 60;
+					if(this.vel.x > -maxSpeed) {
+						this.vel.x = -maxSpeed;
+					}
+				}
+				else {
+					//if you're moving above max speed the other way
+					if(this.vel.x > maxSpeed) {
+						this.vel.x -= Math.max(acceleration, aboveMaxSpeedDeceleration) / 60;
+					}
+					//if you're moving within reasonable speeds
+					else {
+						this.vel.x -= acceleration / 60;
+					}
+					if(this.vel.x < -maxSpeed) {
+						this.vel.x = -maxSpeed;
+					}
+				}
+			}
+			//if you're not moving
+			else {
+				if(this.vel.x > 0) {
+					if(this.vel.x > maxSpeed) {
+						this.vel.x -= aboveMaxSpeedDeceleration / 60;
+					}
+					else {
+						this.vel.x -= deceleration / 60;
+					}
+					if(this.vel.x < 0) {
+						this.vel.x = 0;
+					}
+				}
+				else if(this.vel.x < 0) {
+					if(this.vel.x < -maxSpeed) {
+						this.vel.x += aboveMaxSpeedDeceleration / 60;
+					}
+					else {
+						this.vel.x += deceleration / 60;
+					}
+					if(this.vel.x > 0) {
+						this.vel.x = 0;
+					}
+				}
+			}
 		}
-		this.pos.x += this.vel.x / 60;
+
+		//update position
+		this.vel.y += gravity / 60;
+		var dx = this.vel.x / 60, dy = this.vel.y / 60;
+		var steps = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 5));
+		var collisions = [];
+		for(var i = 0; i < steps; i++) {
+			//move in steps
+			this.pos.x += dx / steps;
+			this.pos.y += dy / steps;
+			//check for collisions
+			for(var j = 0; j < platforms.length; j++) {
+				if(this.collisionBoxes.left.isOverlapping(platforms[j])) {
+					if(this.vel.x < 0) { this.vel.x = 0; }
+					this.left = platforms[j].right;
+					collisions.push({ platform: platforms[j], dir: 'left' });
+				}
+				if(this.collisionBoxes.right.isOverlapping(platforms[j])) {
+					if(this.vel.x > 0) { this.vel.x = 0; }
+					this.right = platforms[j].left;
+					collisions.push({ platform: platforms[j], dir: 'right' });
+				}
+				if(this.collisionBoxes.bottom.isOverlapping(platforms[j])) {
+					if(this.vel.y > 0) { this.vel.y = 0; }
+					this.bottom = platforms[j].top;
+					collisions.push({ platform: platforms[j], dir: 'bottom' });
+				}
+				if(this.collisionBoxes.top.isOverlapping(platforms[j])) {
+					if(this.vel.y < 0) { this.vel.y = 0; }
+					this.top = platforms[j].bottom;
+					collisions.push({ platform: platforms[j], dir: 'top' });
+				}
+			}
+		}
+		//trigger all collisions
+		var wasAerial = !this.supportingPlatform;
+		this.supportingPlatform = null;
+		for(i = 0; i < collisions.length; i++) {
+			this._handleCollision(collisions[i].platform, collisions[i].dir);
+		}
+		var isAerial = !this.supportingPlatform;
+		//update state due to movement
+		if(wasAerial && !isAerial) {
+			this._setState('ground_landing');
+		}
+		else if(!wasAerial && isAerial) {
+			this._setState('airborne');
+		}
+
+	};
+	Fighter.prototype._handleCollision = function(platform, dir) {
+		if(dir === 'bottom') {
+			this.supportingPlatform = platform;
+		}
 	};
 	Fighter.prototype._setState = function(state, frame) {
 		this.state = state;
@@ -258,10 +428,23 @@ define([
 				break;
 			}
 		}
+
+		//draw sprite
 		draw.sprite('fighter', displayedFrame, this.pos.x, this.pos.y, { flip: this.facingDir < 0 });
-		draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
-		draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 25, { fontSize: 10, color: '#aaa', align: 'center' });
-		draw.text('Speed = ' + Math.floor(Math.abs(this.vel.x)), this.pos.x, this.pos.y + 40, { fontSize: 10, color: '#aaa', align: 'center' });
+
+		if(config.SHOW_FIGHTER_DEBUG_DATA) {
+			//draw debug data below sprite
+			draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
+			draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 27, { fontSize: 10, color: '#aaa', align: 'center' });
+			draw.text('speed = ' + Math.floor(Math.abs(this.vel.x)), this.pos.x, this.pos.y + 42, { fontSize: 14, color: '#ccc', align: 'center' });
+
+			//draw collision boxes
+			draw.poly(this.collisionBoxes.left.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.top.top,
+				this.collisionBoxes.top.right, this.collisionBoxes.top.top,  this.collisionBoxes.top.right, this.collisionBoxes.right.top,  this.collisionBoxes.right.right, this.collisionBoxes.right.top,
+				this.collisionBoxes.right.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.bottom.bottom,
+				this.collisionBoxes.bottom.left, this.collisionBoxes.bottom.bottom,  this.collisionBoxes.bottom.left, this.collisionBoxes.left.bottom,  this.collisionBoxes.left.left, this.collisionBoxes.left.bottom,
+				{ close: true, stroke: '#fff', thickness: 1 });
+		}
 	};
 	return Fighter;
 });

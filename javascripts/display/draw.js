@@ -82,6 +82,7 @@ define([
 	return {
 		rect: function(x, y, width, height, params) {
 			if(config.RENDER) {
+				if(arguments.length <= 2) { params = y; height = x.height; width = x.width; y = x.y; x = x.x; }
 				var result = applyDrawParams(params, 'fill');
 				if(result.shouldFill) {
 					ctx.fillRect(result.zoom * x + result.offset.x, result.zoom * y + result.offset.y,
@@ -121,11 +122,12 @@ define([
 				}
 			}
 		},
-		poly: function(/* x1, y1, x2, y2, ..., */ params) {
+		poly: function(/* x1, y1, x2, y2, ..., params */) {
 			if(config.RENDER) {
-				params = arguments.length % 2 === 0 ? {} : arguments[arguments.length - 1];
+				var params = (arguments.length % 2 === 0) ? {} : arguments[arguments.length - 1];
 				var result = applyDrawParams(params, 'stroke');
 				ctx.beginPath();
+				// console.log(arguments[0], arguments[1]);
 				ctx.moveTo(result.zoom * arguments[0] + result.offset.x, result.zoom * arguments[1] + result.offset.y);
 				for(var i = 2; i < arguments.length - 1; i += 2) {
 					ctx.lineTo(result.zoom * arguments[i] + result.offset.x, result.zoom * arguments[i + 1] + result.offset.y);
