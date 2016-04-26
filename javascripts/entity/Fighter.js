@@ -21,7 +21,7 @@ define([
 		}));
 
 		//state variables
-		this.state = 'airborne';
+		this.state = 'standing';
 		this.framesInCurrentState = 0;
 		this.platform = null;
 		this.facing = params.facing || 1;
@@ -30,16 +30,29 @@ define([
 		this.horizontalDir = 0;
 		this.verticalDir = 0;
 		this.bufferedActionInput = null;
-		this.bufferedDirectionInput = null;
+		this.bufferedHorizontalDirectionInput = null;
+		this.bufferedVerticalDirecitonInput = null;
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function() {
 		this.framesInCurrentState++;
 		if(this.bufferedActionInput) {
 			this.bufferedActionInput.framesBuffered++;
+			if(this.bufferedActionInput.framesBuffered > 5) {
+				this.bufferedActionInput = null;
+			}
 		}
-		if(this.bufferedDirectionInput) {
-			this.bufferedDirectionInput.framesBuffered++;
+		if(this.bufferedHorizontalDirectionInput) {
+			this.bufferedHorizontalDirectionInput.framesBuffered++;
+			if(this.bufferedHorizontalDirectionInput.framesBuffered > 5) {
+				this.bufferedHorizontalDirectionInput = null;
+			}
+		}
+		if(this.bufferedVerticalDirecitonInput) {
+			this.bufferedVerticalDirecitonInput.framesBuffered++;
+			if(this.bufferedVerticalDirecitonInput.framesBuffered > 5) {
+				this.bufferedVerticalDirecitonInput = null;
+			}
 		}
 	};
 	Fighter.prototype.handleInput = function(key, isDown, state) {
@@ -77,9 +90,15 @@ define([
 				framesBuffered: 0
 			};
 		}
-		else if((key === 'LEFT' || key === 'RIGHT' || key === 'UP' || key === 'DOWN') && isDown) {
-			this.bufferedDirectionInput = {
-				dir: key,
+		else if((key === 'LEFT' || key === 'RIGHT') && isDown) {
+			this.bufferedHorizontalDirectionInput = {
+				dir: (key === 'LEFT' ? -1 : 1),
+				framesBuffered: 0
+			};
+		}
+		else if((key === 'UP' || key === 'DOWN') && isDown) {
+			this.bufferedVerticalDirectionInput = {
+				dir: (key === 'UP' ? -1 : 1),
 				framesBuffered: 0
 			};
 		}
@@ -110,10 +129,10 @@ define([
 		}
 		else if(fighterStates[this.state].physics === 'running') {
 			//when running we assume the player is moving continually in the direction they are facing
-			var runningAcceleration = this.getFrameDataValue('runningAcceleration');
 			var runningSoftMaxSpeed = this.getFrameDataValue('runningSoftMaxSpeed');
-			var runningAboveMaxSpeedDeceleration = this.getFrameDataValue('runningAboveMaxSpeedDeceleration');
+			var runningAcceleration = this.getFrameDataValue('runningAcceleration');
 			var runningWrongWayDeceleration = this.getFrameDataValue('runningWrongWayDeceleration');
+			var runningAboveMaxSpeedDeceleration = this.getFrameDataValue('runningAboveMaxSpeedDeceleration');
 			m = this.facing; //1 if facing right, -1 if facing left
 			//running above max speed, decelerate
 			if(this.vel.x * m > stillVelX * m + runningSoftMaxSpeed) {
@@ -140,11 +159,11 @@ define([
 		}
 		else if(fighterStates[this.state].physics === 'airborne') {
 			//when airborne, the player can freely move back and forth	
+			var airborneSoftMaxSpeed = this.getFrameDataValue('airborneSoftMaxSpeed');
 			var airborneAcceleration = this.getFrameDataValue('airborneAcceleration');
 			var airborneDeceleration = this.getFrameDataValue('airborneDeceleration');
-			var airborneSoftMaxSpeed = this.getFrameDataValue('airborneSoftMaxSpeed');
-			var airborneAboveMaxSpeedDeceleration = this.getFrameDataValue('airborneAboveMaxSpeedDeceleration');
 			var airborneTurnaroundDeceleration = this.getFrameDataValue('airborneTurnaroundDeceleration');
+			var airborneAboveMaxSpeedDeceleration = this.getFrameDataValue('airborneAboveMaxSpeedDeceleration');
 			m = this.vel.x > stillVelX ? 1 : -1; //1 if moving right, -1 if moving left
 			if(this.vel.x === stillVelX) { m = this.horizontalDir; }
 			//not trying to move
@@ -201,9 +220,14 @@ define([
 		var gravity = this.getFrameDataValue('gravity');
 		var softMaxFallSpeed = this.getFrameDataValue('softMaxFallSpeed');
 		var aboveMaxFallSpeedDeceleration = this.getFrameDataValue('aboveMaxFallSpeedDeceleration');
-		this.vel.y += gravity / 60;
+		if(this.vel.y < stillVelX + softMaxFallSpeed) {
+			this.vel.y += gravity / 60;
+			if(this.vel.y > stillVelY + softMaxFallSpeed) {
+				this.vel.y = stillVelY + softMaxFallSpeed;
+			}
+		}
 		//if falling too fast, slow down
-		if(this.vel.y > stillVelY + softMaxFallSpeed) {
+		else {
 			this.vel.y -= aboveMaxFallSpeedDeceleration / 60;
 			if(this.vel.y < stillVelY + softMaxFallSpeed) {
 				this.vel.y = stillVelY + softMaxFallSpeed;
@@ -303,13 +327,18 @@ define([
 		var animationHasLooped = this.framesInCurrentState >= totalAnimationFrames;
 
 		//then iterate through all possible transitions and see if one is valid
+		var frameCancels = this.getFrameDataValue('frameCancels');
 		for(i = 0; i < fighterStates[this.state].transitions.length; i++) {
 			var transition = fighterStates[this.state].transitions[i];
-			//check to see if the transition's conditions are satisfied
-			if((transition.cancel || animationHasLooped) && (!fighterStates[transition.state].conditions || fighterStates[transition.state].conditions.call(this))) {
-				//we can transition to the new state!
-				this.setState(transition.state);
-				return true;
+			//check to make sure the transition can be canceled into
+			if(transition.cancel || (!transition.frameCancel && animationHasLooped) ||
+				(transition.frameCancel && frameCancels && frameCancels.indexOf(transition.state) >= 0)) {
+				//check to see if the transition's conditions are satisfied
+				if(!fighterStates[transition.state].conditions || fighterStates[transition.state].conditions.call(this)) {
+					//we can transition to the new state!
+					this.setState(transition.state);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -321,11 +350,12 @@ define([
 		}
 		//switch to the new state
 		var prevState = this.state;
+		var prevFrames = this.framesInCurrentState;
 		this.state = state;
 		this.framesInCurrentState = frame || 0;
 		//apply effects from entering the new state
 		if(fighterStates[this.state].effectsOnEnter) {
-			fighterStates[this.state].effectsOnEnter.call(this, prevState);
+			fighterStates[this.state].effectsOnEnter.call(this, prevState, prevFrames);
 		}
 	};
 	Fighter.prototype.getFrameDataValue = function(key) {
@@ -357,425 +387,5 @@ define([
 		}
 		return null;
 	};
-	/*Fighter.prototype.handleInput = function(inputs, inputState) {
-		var numUpdates, maxStateUpdates = 10;
-		for(var i = 0; i < inputs.length; i++) {
-			this.inputState = inputs[i].state;
-			for(numUpdates = 0; numUpdates < maxStateUpdates; numUpdates++) {
-				if(!this._updateState(inputs[i])) {
-					break;
-				}
-			}
-		}
-		this.inputState = inputState;
-		for(numUpdates = 0; numUpdates < maxStateUpdates; numUpdates++) {
-			if(!this._updateState(null)) {
-				break;
-			}
-		}
-	};
-	Fighter.prototype._updateState = function(input) {
-		var stateHasLooped = this.framesInCurrentState >= moveData[this.state].totalFrames;
-		var horizontalDir = this.inputState.horizontalDir;
-		var verticalDir = this.inputState.verticalDir;
-
-		//STANDING <--> RUNNING
-		//standing --> run_start
-		if(this.state === 'standing' && horizontalDir === this.facing) {
-			this.setState('run_start');
-		}
-		//run_start --> running
-		else if(this.state === 'run_start' && stateHasLooped) {
-			this.setState('running');
-		}
-		//running --> run_end
-		else if(this.state === 'running' && horizontalDir === 0) {
-			this.setState('run_end');
-		}
-		//run_end --> standing
-		else if(this.state === 'run_end' && stateHasLooped) {
-			this.setState('standing');
-		}
-		//run_start -(cancel)-> run_end
-		else if(this.state === 'run_start' && horizontalDir === 0 && this._stateIsCancelableBy('run_end')) {
-			this.setState('run_end', moveData.run_end.earlyCancelFrame);
-		}
-
-		//STANDING TURNAROUND
-		//standing --> standing_turnaround_start
-		else if(this.state === 'standing' && horizontalDir === -this.facing) {
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//standing_turnaround_start --> standing_turnaround_end
-		else if(this.state === 'standing_turnaround_start' && horizontalDir !== this.facing && stateHasLooped) {
-			this.setState('standing_turnaround_end');
-		}
-		//standing_turnaround_end --> standing
-		else if(this.state === 'standing_turnaround_end' && stateHasLooped) {
-			this.setState('standing');
-		}
-		//standing_turnaround_start --> running_turnaround_end
-		else if(this.state === 'standing_turnaround_start' && horizontalDir === this.facing && stateHasLooped) {
-			this.setState('running_turnaround_end');
-		}
-		//standing_turnaround_start -(cancel)-> standing_turnaround_start
-		else if(this.state === 'standing_turnaround_start' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			//TODO buffer input for double-turnarounds?
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//standing_turnaround_end -(cancel)-> standing_turnaround_start
-		else if(this.state === 'standing_turnaround_end' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			//TODO buffer input for double-turnarounds?
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-
-		//RUNNING TURNAROUND
-		//running --> running_turnaround_start
-		else if(this.state === 'running' && horizontalDir === -this.facing) {
-			this.facing = horizontalDir;
-			this.setState('running_turnaround_start');
-		}
-		//running_turnaround_start --> running_turnaround_end
-		else if(this.state === 'running_turnaround_start' && horizontalDir === this.facing && stateHasLooped) {
-			this.setState('running_turnaround_end');
-		}
-		//running_turnaround_end --> running
-		else if(this.state === 'running_turnaround_end' && stateHasLooped) {
-			this.setState('running');
-		}
-		//running_turnaround_start --> standing_turnaround_end
-		else if(this.state === 'running_turnaround_start' && horizontalDir !== this.facing && stateHasLooped) {
-			this.setState('standing_turnaround_end');
-		}
-		//run_end -(cancel)-> running_turnaround_start
-		else if(this.state === 'run_end' && horizontalDir === -this.facing && this._stateIsCancelableBy('running_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('running_turnaround_start');
-		}
-		//run_end -(cancel)-> standing_turnaround_start
-		else if(this.state === 'run_end' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//running_turnaround_start -(cancel)-> standing_turnaround_start
-		else if(this.state === 'running_turnaround_start' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//running_turnaround_end -(cancels)-> running_turnaround_start
-		else if(this.state === 'running_turnaround_end' && horizontalDir === -this.facing && this._stateIsCancelableBy('running_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('running_turnaround_start');
-		}
-
-		//STANDING <--> CROUCHING
-		//standing --> crouch_start
-		else if(this.state === 'standing' && verticalDir === -1) {
-			this.setState('crouch_start');
-		}
-		//crouch_start --> crouching
-		else if(this.state === 'crouch_start' && stateHasLooped) {
-			this.setState('crouching');
-		}
-		//crouching --> crouch_end
-		else if(this.state === 'crouching' && verticalDir !== -1) {
-			this.setState('crouch_end');
-		}
-		//crouch_end --> standing
-		else if(this.state === 'crouch_end' && stateHasLooped) {
-			this.setState('standing');
-		}
-		//crouch_start -(cancels)-> crouch_end
-		else if(this.state === 'crouch_start' && verticalDir !== -1 && this._stateIsCancelableBy('crouch_end')) {
-			this.setState('crouch_end');
-		}
-		//crouch_end -(cancels)-> run_start
-		else if(this.state === 'crouch_end' && horizontalDir === this.facing && this._stateIsCancelableBy('run_start')) {
-			this.setState('run_start');
-		}
-		//crouch_end -(cancels)-> standing_turnaround_start
-		else if(this.state === 'crouch_end' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//running -(cancels)-> crouch_start
-		else if(this.state === 'running' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
-			this.setState('crouch_start');
-		}
-		//run_end -(cancels)-> crouch_start
-		else if(this.state === 'run_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
-			this.setState('crouch_start');
-		}
-		//running_turnaround_end -(cancels)-> crouch_start
-		else if(this.state === 'running_turnaround_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
-			this.setState('crouch_start');
-		}
-		//standing_turnaround_end -(cancels)-> crouch_start
-		else if(this.state === 'standing_turnaround_end' && verticalDir === -1 && this._stateIsCancelableBy('crouch_start')) {
-			this.setState('crouch_start');
-		}
-
-		//LANDING
-		//jump_landing --> standing
-		else if(this.state === 'jump_landing' && stateHasLooped) {
-			this.setState('standing');
-		}
-
-		//JUMPING
-		//(many grounded states) --> jump_takeoff
-		else if((this.state === 'standing' || this.state === 'running' ||
-			this.state === 'standing_turnaround_start' || this.state === 'standing_turnaround_end' ||
-			this.state === 'running_turnaround_start' || this.state === 'running_turnaround_end' ||
-			this.state === 'crouch_start' || this.state === 'crouching' ||
-			this.state === 'crouch_end' || this.state === 'run_start' ||
-			this.state === 'run_end') && input && input.key === 'JUMP' && input.isDown) {
-			this.setState('jump_takeoff');
-		}
-		//jump_takeoff --> airborne
-		else if(this.state === 'jump_takeoff' && stateHasLooped) {
-			this.platform = null;
-			this.vel.y = -moveData.jump_takeoff.jumpSpeed;
-			this.setState('airborne');
-		}
-		//jump_landing -(cancels)-> jump_takeoff
-		if(this.state === 'jump_landing' && this._stateIsCancelableBy('jump_takeoff') &&
-			input && input.key === 'JUMP' && input.isDown) {
-			this.setState('jump_takeoff');
-		}
-		//jump_landing -(cancels)-> run_start
-		if(this.state === 'jump_landing' && horizontalDir === this.facing && this._stateIsCancelableBy('run_start')) {
-			this.setState('run_start');
-		}
-		//jump_landing -(cancels)-> standing_turnaround_start
-		if(this.state === 'jump_landing' && horizontalDir === -this.facing && this._stateIsCancelableBy('standing_turnaround_start')) {
-			this.facing = horizontalDir;
-			this.setState('standing_turnaround_start');
-		}
-		//jump_landing -(cancels)-> crouching
-		if(this.state === 'jump_landing' && verticalDir === -1 && this._stateIsCancelableBy('crouching')) {
-			this.setState('crouching');
-		}
-
-		else { return false; }
-		return true;
-	};
-	Fighter.prototype.move = function(t, platforms) {
-		var gravity = typeof moveData[this.state].gravity === 'number' ? moveData[this.state].gravity : moveData.airborne.gravity;
-		var maxSpeed, acceleration, deceleration, aboveMaxSpeedDeceleration;
-		//slide to a stop while standing
-		if(moveData[this.state].physics === 'standing')  {
-			deceleration = typeof moveData[this.state].deceleration === 'number' ? moveData[this.state].deceleration : moveData.standing.deceleration;
-			if(this.vel.x > 0) {
-				this.vel.x = Math.max(0, this.vel.x - deceleration / 60);
-			}
-			else if(this.vel.x < 0) {
-				this.vel.x = Math.min(0, this.vel.x + deceleration * t);
-			}
-		}
-		//increase speed while running
-		else if(moveData[this.state].physics === 'running') {
-			maxSpeed = typeof moveData[this.state].maxSpeed === 'number' ? moveData[this.state].maxSpeed : moveData.running.maxSpeed;
-			acceleration = typeof moveData[this.state].acceleration === 'number' ? moveData[this.state].acceleration : moveData.running.acceleration;
-			aboveMaxSpeedDeceleration = typeof moveData[this.state].aboveMaxSpeedDeceleration === 'number' ? moveData[this.state].aboveMaxSpeedDeceleration : moveData.running.aboveMaxSpeedDeceleration;
-			//if we're running over top speed, slow down (slowly)
-			if(this.vel.x * this.facing > maxSpeed) {
-				this.vel.x -= this.facing * aboveMaxSpeedDeceleration * t;
-				if(this.vel.x * this.facing < maxSpeed) {
-					this.vel.x = this.facing * maxSpeed;
-				}
-			}
-			//otherwise, speed up
-			else {
-				this.vel.x += this.facing * acceleration * t;
-				if(this.vel.x * this.facing > maxSpeed) {
-					this.vel.x = this.facing * maxSpeed;
-				}
-			}
-		}
-		else if(moveData[this.state].physics === 'airborne') {
-			maxSpeed = typeof moveData[this.state].maxSpeed === 'number' ? moveData[this.state].maxSpeed : moveData.airborne.maxSpeed;
-			acceleration = typeof moveData[this.state].acceleration === 'number' ? moveData[this.state].acceleration : moveData.airborne.acceleration;
-			deceleration = typeof moveData[this.state].deceleration === 'number' ? moveData[this.state].deceleration : moveData.airborne.deceleration;
-			aboveMaxSpeedDeceleration = typeof moveData[this.state].aboveMaxSpeedDeceleration === 'number' ? moveData[this.state].aboveMaxSpeedDeceleration : moveData.airborne.aboveMaxSpeedDeceleration;
-			//if you're trying to move right
-			if(this.inputState.horizontalDir > 0) {
-				//if you're moving above max speed
-				if(this.vel.x > maxSpeed) {
-					this.vel.x -= aboveMaxSpeedDeceleration * t;
-					if(this.vel.x < maxSpeed) {
-						this.vel.x = maxSpeed;
-					}
-				}
-				else {
-					//if you're moving above max speed the other way
-					if(this.vel.x < -maxSpeed) {
-						this.vel.x += Math.max(acceleration, aboveMaxSpeedDeceleration) * t;
-					}
-					//if you're moving within reasonable speeds
-					else {
-						this.vel.x += acceleration * t;
-					}
-					if(this.vel.x > maxSpeed) {
-						this.vel.x = maxSpeed;
-					}
-				}
-			}
-			//if you're trying to move left
-			else if(this.inputState.horizontalDir < 0) {
-				//if you're moving above max speed
-				if(this.vel.x < -maxSpeed) {
-					this.vel.x += aboveMaxSpeedDeceleration * t;
-					if(this.vel.x > -maxSpeed) {
-						this.vel.x = -maxSpeed;
-					}
-				}
-				else {
-					//if you're moving above max speed the other way
-					if(this.vel.x > maxSpeed) {
-						this.vel.x -= Math.max(acceleration, aboveMaxSpeedDeceleration) * t;
-					}
-					//if you're moving within reasonable speeds
-					else {
-						this.vel.x -= acceleration * t;
-					}
-					if(this.vel.x < -maxSpeed) {
-						this.vel.x = -maxSpeed;
-					}
-				}
-			}
-			//if you're not moving
-			else {
-				if(this.vel.x > 0) {
-					if(this.vel.x > maxSpeed) {
-						this.vel.x -= aboveMaxSpeedDeceleration * t;
-					}
-					else {
-						this.vel.x -= deceleration * t;
-					}
-					if(this.vel.x < 0) {
-						this.vel.x = 0;
-					}
-				}
-				else if(this.vel.x < 0) {
-					if(this.vel.x < -maxSpeed) {
-						this.vel.x += aboveMaxSpeedDeceleration * t;
-					}
-					else {
-						this.vel.x += deceleration * t;
-					}
-					if(this.vel.x > 0) {
-						this.vel.x = 0;
-					}
-				}
-			}
-		}
-
-		//update position
-		this.vel.y += gravity * t;
-		var dx = this.vel.x * t, dy = this.vel.y * t;
-		var moveSteps = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 5));
-		var collisions = [];
-		for(var i = 0; i < steps; i++) {
-			//move in steps
-			this.pos.x += dx / steps;
-			this.pos.y += dy / steps;
-			//check for collisions
-			for(var j = 0; j < platforms.length; j++) {
-				if(this.collisionBoxes.left.isOverlapping(platforms[j])) {
-					if(this.vel.x < 0) { this.vel.x = 0; }
-					this.left = platforms[j].right;
-					collisions.push({ platform: platforms[j], dir: 'left' });
-				}
-				if(this.collisionBoxes.right.isOverlapping(platforms[j])) {
-					if(this.vel.x > 0) { this.vel.x = 0; }
-					this.right = platforms[j].left;
-					collisions.push({ platform: platforms[j], dir: 'right' });
-				}
-				if(this.collisionBoxes.bottom.isOverlapping(platforms[j])) {
-					if(this.vel.y > 0) { this.vel.y = 0; }
-					this.bottom = platforms[j].top;
-					collisions.push({ platform: platforms[j], dir: 'bottom' });
-				}
-				if(this.collisionBoxes.top.isOverlapping(platforms[j])) {
-					if(this.vel.y < 0) { this.vel.y = 0; }
-					this.top = platforms[j].bottom;
-					collisions.push({ platform: platforms[j], dir: 'top' });
-				}
-			}
-		}
-		//trigger all collisions
-		var wasAirborne = !this.platform;
-		this.platform = null;
-		for(i = 0; i < collisions.length; i++) {
-			this.handleCollision(collisions[i].platform, collisions[i].dir);
-		}
-		var isAirborne = !this.platform;
-		//update state due to movement
-		if(wasAirborne && !isAirborne) {
-			this.setState('jump_landing');
-		}
-		else if(!wasAirborne && isAirborne) {
-			this.setState('airborne');
-		}
-
-	};
-	Fighter.prototype.handleCollision = function(platform, dir) {
-		if(dir === 'bottom') {
-			this.platform = platform;
-		}
-	};
-	Fighter.prototype.setState = function(state, frame) {
-		this.state = state;
-		this.framesInCurrentState = frame || 0;
-	};
-	Fighter.prototype._stateIsCancelableBy = function(action) {
-		if(moveData[this.state].cancels && moveData[this.state].cancels.indexOf(action) >= 0) {
-			return true;
-		}
-		else {
-			var frames = this.framesInCurrentState % moveData[this.state].totalFrames;
-			for(var i = 0; i < moveData[this.state].animation.length; i++) {
-				frames -= moveData[this.state].animation[i].frames;
-				if(frames < 0) {
-					return moveData[this.state].animation[i].cancels &&
-					moveData[this.state].animation[i].cancels.indexOf(action) >= 0;
-				}
-			}
-			return false;
-		}
-	};
-	Fighter.prototype.render = function() {
-		//figure out frame
-		var displayedFrame = 0;
-		var currFrame = this.framesInCurrentState % moveData[this.state].totalFrames;
-		totalFrames = 0;
-		for(i = 0; i < moveData[this.state].animation.length; i++) {
-			totalFrames += moveData[this.state].animation[i].frames;
-			if(totalFrames > currFrame) {
-				displayedFrame = moveData[this.state].animation[i].sprite;
-				break;
-			}
-		}
-
-		//draw sprite
-		draw.sprite('fighter', displayedFrame, this.pos.x, this.pos.y, { flip: this.facing < 0 });
-
-		if(config.SHOW_FIGHTER_DEBUG_DATA) {
-			//draw debug data below sprite
-			draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
-			draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 27, { fontSize: 10, color: '#aaa', align: 'center' });
-			draw.text('speed = ' + Math.floor(Math.abs(this.vel.x)), this.pos.x, this.pos.y + 42, { fontSize: 14, color: '#ccc', align: 'center' });
-
-			//draw collision boxes
-			draw.poly(this.collisionBoxes.left.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.top.top,
-				this.collisionBoxes.top.right, this.collisionBoxes.top.top,  this.collisionBoxes.top.right, this.collisionBoxes.right.top,  this.collisionBoxes.right.right, this.collisionBoxes.right.top,
-				this.collisionBoxes.right.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.bottom.bottom,
-				this.collisionBoxes.bottom.left, this.collisionBoxes.bottom.bottom,  this.collisionBoxes.bottom.left, this.collisionBoxes.left.bottom,  this.collisionBoxes.left.left, this.collisionBoxes.left.bottom,
-				{ close: true, stroke: '#fff', thickness: 1 });
-		}
-	};*/
 	return Fighter;
 });

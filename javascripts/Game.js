@@ -15,7 +15,7 @@ define([
 ) {
 	function Game(level) {
 		//create fighters
-		this.player = new Croc({ x: -200, y: -100, facing: 1, velX: 100 });
+		this.player = new Croc({ x: -200, y: 0, facing: 1 });
 		this.fighters = [ this.player ];
 
 		//create platforms

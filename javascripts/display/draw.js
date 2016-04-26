@@ -162,10 +162,7 @@ define([
 				if(!sprites[spriteKey]) {
 					sprites[spriteKey] = new Sprite(config.SPRITES[spriteKey]);
 				}
-				if(sprites[spriteKey].loaded) {
-					sprites[spriteKey].draw(frame, x, y, params);
-				}
-				else {
+				if(config.DRAW_SPRITE_BOUNDING_BOXES) {
 					var sprite = config.SPRITES[spriteKey];
 					var result = applyDrawParams({
 						fixed: params && params.fixed,
@@ -201,6 +198,9 @@ define([
 						var innerTop = centerY - sprite.boundingBox.y;
 						ctx.strokeRect(result.zoom * (x - scale * innerLeft) + result.offset.x, result.zoom * (y - scale * innerTop) + result.offset.y, result.zoom * sprite.boundingBox.width * scale, result.zoom * sprite.boundingBox.height * scale);
 					}
+				}
+				if(sprites[spriteKey].loaded) {
+					sprites[spriteKey].draw(frame, x, y, params);
 				}
 			}
 		}

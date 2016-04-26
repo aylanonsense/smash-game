@@ -63,8 +63,8 @@ define([
 		var ctx = this.canvas.getContext('2d');
 		//transfer image data onto the scaled canvas
 		var i = 0;
-		for(var y = 0; y < imageWidth; y++) {
-			for(var x = 0; x < imageHeight; x++) {
+		for(var y = 0; y < imageHeight; y++) {
+			for(var x = 0; x < imageWidth; x++) {
 				//fill the scaled pixel
 				var r = imageData[i++], g = imageData[i++], b = imageData[i++], a = imageData[i++] / 100.0;
 				ctx.fillStyle = 'rgba(' + [r, g, b, a].join(',') + ')';

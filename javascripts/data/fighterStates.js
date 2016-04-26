@@ -15,13 +15,17 @@ define({
 	standing_turnaround_start: {
 		physics: 'running',
 		conditions: function() {
-			return this.horizontalDir === -this.facing;
+			return this.horizontalDir === -this.facing ||
+				(this.bufferedHorizontalDirectionInput &&
+				this.bufferedHorizontalDirectionInput.dir === -this.facing);
 		},
-		effectsOnEnter: function(prevState) {
-			this.facing = this.horizontalDir;
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.bufferedHorizontalDirectionInput = null;
+			this.facing = -this.facing;
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'standing_turnaround_start', frameCancel: true },
 			{ state: 'running_turnaround_end' },
 			{ state: 'standing_turnaround_end' },
 			{ state: 'jump_takeoff', cancel: true },
@@ -34,6 +38,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'run_start', frameCancel: true },
+			{ state: 'standing_turnaround_start', cancel: true },
 			{ state: 'standing' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }
@@ -45,6 +51,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'crouch_start', cancel: true },
 			{ state: 'run_end', cancel: true },
 			{ state: 'running_turnaround_start', cancel: true },
 			{ state: 'jump_takeoff', cancel: true },
@@ -54,17 +61,40 @@ define({
 	run_start: {
 		physics: 'running',
 		conditions: function() {
-			return this.horizontalDir === this.facing;
+			return this.horizontalDir === this.facing ||
+				(this.bufferedHorizontalDirectionInput &&
+				this.bufferedHorizontalDirectionInput === this.facing);
 		},
-		effectsOnEnter: null,
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.bufferedHorizontalDirectionInput = null;
+		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'running_turnaround_start', frameCancel: true },
+			{ state: 'standing_turnaround_start', frameCancel: true },
+			{ state: 'run_end_quick', frameCancel: true },
 			{ state: 'running' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }
 		]
 	},
 	run_end: {
+		physics: 'standing',
+		conditions: function() {
+			return this.horizontalDir === 0;
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: 'run_start', frameCancel: true },
+			{ state: 'running_turnaround_start', frameCancel: true },
+			{ state: 'standing_turnaround_start', frameCancel: true },
+			{ state: 'standing' },
+			{ state: 'jump_takeoff', cancel: true },
+			{ state: 'airborne_falloff', cancel: true }
+		]
+	},
+	run_end_quick: {
 		physics: 'standing',
 		conditions: function() {
 			return this.horizontalDir === 0;
@@ -80,10 +110,13 @@ define({
 	running_turnaround_start: {
 		physics: 'running',
 		conditions: function() {
-			return this.horizontalDir === -this.facing;
+			return this.horizontalDir === -this.facing ||
+				(this.bufferedHorizontalDirectionInput &&
+				this.bufferedHorizontalDirectionInput.dir === -this.facing);
 		},
-		effectsOnEnter: function(prevState) {
-			this.facing = this.horizontalDir;
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.bufferedHorizontalDirectionInput = null;
+			this.facing = -this.facing;
 		},
 		effectsOnLeave: null,
 		transitions: [
@@ -101,6 +134,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'running_turnaround_start', cancel: true },
 			{ state: 'running' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }
@@ -138,26 +172,38 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'standing_turnaround_start', frameCancel: true },
+			{ state: 'run_start', frameCancel: true },
 			{ state: 'standing' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }
 		]
 	},
 	jump_takeoff: {
-		physics: 'standing',
+		physics: 'airborne',
 		conditions: function() {
-			return this.bufferedActionInput &&
-				this.bufferedActionInput.action === 'JUMP' &&
-				this.bufferedActionInput.framesBuffered < 6;
+			return this.bufferedActionInput && this.bufferedActionInput.action === 'JUMP';
 		},
-		effectsOnEnter: function() {
+		effectsOnEnter: function(prevState, prevFrames) {
 			this.bufferedActionInput = null;
 		},
 		effectsOnLeave: function(nextState) {
 			this.platform = null;
 			if(nextState === 'airborne') {
+				var stillVelX = (this.platform ? this.platform.vel.x : 0);
 				var stillVelY = (this.platform ? this.platform.vel.y : 0);
-				this.vel.y = stillVelY - this.getFrameDataValue('jumpSpeed');
+				//when jumping off the ground, you can get a little horizontal boost to start you out
+				var jumpHorizontalSpeed = this.getFrameDataValue('jumpHorizontalSpeed');
+				if(this.horizontalDir !== 0) {
+					var m = this.horizontalDir;
+					if(this.vel.x * m < stillVelX * m + jumpHorizontalSpeed) {
+						this.vel.x += jumpHorizontalSpeed * m;
+						if(this.vel.x * m > stillVelX * m + jumpHorizontalSpeed) {
+							this.vel.x = stillVelX + jumpHorizontalSpeed * m;
+						}
+					}
+				}
+				this.vel.y = Math.min(this.vel.y, stillVelY - this.getFrameDataValue('jumpSpeed'));
 			}
 		},
 		transitions: [
@@ -173,6 +219,9 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'standing_turnaround_start', frameCancel: true },
+			{ state: 'run_start', frameCancel: true },
+			{ state: 'crouch_start', frameCancel: true },
 			{ state: 'standing' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }

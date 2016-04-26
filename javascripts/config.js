@@ -40,7 +40,8 @@ define({
 	TIME_SCALE: 1.0, //2.0 will run twice as fast, 0.5 will run at half speed
 
 	//debug
-	SHOW_FIGHTER_DEBUG_DATA: true,
+	SHOW_FIGHTER_DEBUG_DATA: false,
+	DRAW_SPRITE_BOUNDING_BOXES: false,
 
 	//gameplay
 	MAX_MOVEMENT_PER_STEP: 10
