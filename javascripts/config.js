@@ -4,8 +4,8 @@ define({
 	CANVAS_WIDTH: 800,
 	CANVAS_HEIGHT: 600,
 	SPRITES: {
-		fighter: {
-			path: '/sprites/fighter.png',
+		croc: {
+			path: '/sprites/croc.png',
 			frameWidth: 100,
 			frameHeight: 100,
 			scale: 2,
@@ -24,6 +24,7 @@ define({
 		40: 'DOWN', 83: 'DOWN', //down arrow / s key
 		39: 'RIGHT', 68: 'RIGHT', //right arrow / d key
 		32: 'JUMP', //space bar
+
 		//90: 'LIGHT', 74: 'LIGHT', //z key / j key
 		//88: 'HEAVY', 75: 'HEAVY', //x key / k key
 		//67: 'SPECIAL', 76: 'SPECIAL', //c key / l key
@@ -34,12 +35,12 @@ define({
 	},
 
 	//frame rate
-	CONSTANT_TIME_PER_FRAME: false,
+	CONSTANT_TIME_PER_FRAME: true,
 	FRAMES_PER_SECOND: null, //null will use requestAnimationFrame
 	TIME_SCALE: 1.0, //2.0 will run twice as fast, 0.5 will run at half speed
 
 	//debug
-	SHOW_FIGHTER_DEBUG_DATA: false,
+	SHOW_FIGHTER_DEBUG_DATA: true,
 
 	//gameplay
 	MAX_MOVEMENT_PER_STEP: 10

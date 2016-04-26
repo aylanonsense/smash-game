@@ -7,11 +7,13 @@ define([
 ) {
 	function Platform(params) {
 		this.pos = new Vector(params.x, params.y);
+		this.vel = new Vector(params.velX, params.velY);
 		this.width = params.width;
 		this.height = params.height;
 	}
-	Platform.prototype.sameAs = function(other) {
-		return other && this._PlatformId === other._PlatformId;
+	Platform.prototype.move = function() {
+		this.pos.x += this.vel.x / 60;
+		this.pos.y += this.vel.y / 60;
 	};
 	Platform.prototype.render = function() {
 		draw.rect(this.pos.x, this.pos.y, this.width, this.height, { fill: '#900' });

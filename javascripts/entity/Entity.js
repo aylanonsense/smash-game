@@ -18,34 +18,10 @@ define([
 		var insetX = 2 + config.MAX_MOVEMENT_PER_STEP;
 		var insetY = 2 + config.MAX_MOVEMENT_PER_STEP;
 		this.collisionBoxes = {
-			left: new Rect({
-				parent: this,
-				x: -this.width / 2,
-				y: -this.height + insetY,
-				width: this.width / 2,
-				height: this.height - 2 * insetY
-			}),
-			right: new Rect({
-				parent: this,
-				x: 0,
-				y: -this.height + insetY,
-				width: this.width / 2,
-				height: this.height - 2 * insetY
-			}),
-			top: new Rect({
-				parent: this,
-				x: -this.width / 2 + insetX,
-				y: -this.height,
-				width: this.width - 2 * insetX,
-				height: this.height / 2
-			}),
-			bottom: new Rect({
-				parent: this,
-				x: -this.width / 2 + insetX,
-				y: -this.height / 2,
-				width: this.width - 2 * insetX,
-				height: this.height / 2
-			}),
+			left: new Rect({ parent: this, x: -this.width / 2, y: -this.height + insetY, width: this.width / 2, height: this.height - 2 * insetY }),
+			right: new Rect({ parent: this, x: 0, y: -this.height + insetY, width: this.width / 2, height: this.height - 2 * insetY }),
+			top: new Rect({ parent: this, x: -this.width / 2 + insetX, y: -this.height, width: this.width - 2 * insetX, height: this.height / 2 }),
+			bottom: new Rect({ parent: this, x: -this.width / 2 + insetX, y: -this.height / 2, width: this.width - 2 * insetX, height: this.height / 2 }),
 		};
 	}
 	Entity.prototype.sameAs = function(other) {
