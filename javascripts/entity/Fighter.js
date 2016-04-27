@@ -25,10 +25,14 @@ define([
 		this.framesInCurrentState = 0;
 		this.platform = null;
 		this.facing = params.facing || 1;
+		this.airborneJumpsUsed = 0;
+		this.isBlocking = false;
+		this.framesSpentBlocking = 0;
 
 		//input variables
 		this.horizontalDir = 0;
 		this.verticalDir = 0;
+		this.isHoldingBlock = false;
 		this.bufferedActionInput = null;
 		this.bufferedHorizontalDirectionInput = null;
 		this.bufferedVerticalDirecitonInput = null;
@@ -53,6 +57,9 @@ define([
 			if(this.bufferedVerticalDirecitonInput.framesBuffered > 5) {
 				this.bufferedVerticalDirecitonInput = null;
 			}
+		}
+		if(this.isBlocking) {
+			this.framesSpentBlocking++;
 		}
 	};
 	Fighter.prototype.handleInput = function(key, isDown, state) {
@@ -81,6 +88,11 @@ define([
 		}
 		else if(key === 'DOWN' && !isDown) {
 			if(this.verticalDir === 1) { this.verticalDir = 0; }
+		}
+
+		//handle changes in blocking
+		if(key === 'BLOCK') {
+			this.isHoldingBlock = isDown;
 		}
 
 		//buffer inputs
@@ -286,14 +298,26 @@ define([
 	Fighter.prototype.handleCollision = function(platform, dir) {
 		if(dir === 'bottom') {
 			this.platform = platform;
+			this.airborneJumpsUsed = 0;
 		}
 	};
-	Fighter.prototype.endOfFrame = function() {};
+	Fighter.prototype.endOfFrame = function() {
+		if(this.isBlocking && !fighterStates[this.state].isBlocking) {
+			this.isBlocking = false;
+		}
+		else if(!this.isBlocking && fighterStates[this.state].isBlocking) {
+			this.isBlocking = true;
+			this.framesSpentBlocking = 0;
+		}
+	};
 	Fighter.prototype.render = function() {
 		//draw sprite
 		var sprite = this.getFrameDataValue('sprite');
 		var frame = this.getFrameDataValue('spriteFrame');
 		draw.sprite(sprite, frame, this.pos.x, this.pos.y, { flip: this.facing < 0 });
+		if(this.isBlocking) {
+			draw.sprite('shield', 2, this.pos.x, this.pos.y);
+		}
 
 		//draw debug data
 		if(config.SHOW_FIGHTER_DEBUG_DATA) {
@@ -319,6 +343,10 @@ define([
 		}
 	};
 	Fighter.prototype.checkForStateTransition = function() {
+		if(!this.frameData.states[this.state]) {
+			console.log(this.state + " is not defined in the frame data!");
+		}
+
 		//figure out if the animation has looped
 		var totalAnimationFrames = 0;
 		for(var i = 0; i < this.frameData.states[this.state].animation.length; i++) {

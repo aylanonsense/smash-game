@@ -1,26 +1,30 @@
 define({
 	//basic properties
-	width: 54,
+	width: 66,
 	height: 60,
 	sprite: 'croc',
 
-	//physics
+	//jump physics
 	gravity: 800,
 	jumpSpeed: 375,
 	jumpHorizontalSpeed: 100,
+	numAirborneJumps: 2,
+	airborneJumpSpeed: 325,
+	airborneJumpHorizontalSpeed: 100,
 	softMaxFallSpeed: 375,
 	aboveMaxFallSpeedDeceleration: 50,
-	absoluteMaxHorizontalSpeed: 9999,
-	absoluteMaxVerticalSpeed: 9999,
+
 	//standing physics
 	standingDeceleration: 800,
 	standingSoftMaxSpeed: 300,
 	standingAboveMaxSpeedDeceleration: 800,
+
 	//running physics
 	runningSoftMaxSpeed: 300,
 	runningAcceleration: 1000,
 	runningWrongWayDeceleration: 1100,
 	runningAboveMaxSpeedDeceleration: 1100,
+
 	//airborne physics
 	airborneSoftMaxSpeed: 250,
 	airborneAcceleration: 500,
@@ -28,17 +32,20 @@ define({
 	airborneTurnaroundDeceleration: 500,
 	airborneAboveMaxSpeedDeceleration: 100,
 
+	//general physics
+	absoluteMaxHorizontalSpeed: 9999,
+	absoluteMaxVerticalSpeed: 9999,
+
 	//states
 	states: {
 		standing: {
 			animation: [
-				{ spriteFrame: 0, frames: 40 },
-				{ spriteFrame: 1, frames: 40 }
+				{ spriteFrame: 0, frames: 14 },
+				{ spriteFrame: 1, frames: 14 }
 			]
 		},
 		standing_turnaround_start: {
-			runningAcceleration: 300,
-			runningWrongWayDeceleration: 0,
+			runningAcceleration: 500,
 			animation: [
 				{ spriteFrame: 20, frames: 2 },
 				{ spriteFrame: 20, frames: 4, frameCancels: [ 'standing_turnaround_start' ] }
@@ -112,6 +119,61 @@ define({
 				{ spriteFrame: 7, frames: 5, frameCancels: [ 'standing_turnaround_start', 'run_start' ] }
 			]
 		},
+		blocking: {
+			standingAboveMaxSpeedDecelerationeleration: 500,
+			animation: [
+				{ spriteFrame: 51, frames: 14 },
+				{ spriteFrame: 52, frames: 14 }
+			]
+		},
+		block_start: {
+			standingDeceleration: 500,
+			animation: [
+				{ spriteFrame: 50, frames: 3 }
+			]
+		},
+		block_end: {
+			animation: [
+				{ spriteFrame: 53, frames: 5 }
+			]
+		},
+		block_landing: {
+			standingDeceleration: 500,
+			animation: [
+				{ spriteFrame: 44, frames: 3 },
+				{ spriteFrame: 45, frames: 7 }
+			]
+		},
+		airborne_blocking: {
+			airborneAcceleration: 50,
+			airborneTurnaroundDeceleration: 50,
+			animation: [
+				{ spriteFrame: 55, frames: 14 },
+				{ spriteFrame: 56, frames: 14 }
+			]
+		},
+		airborne_block_start: {
+			airborneAcceleration: 50,
+			airborneTurnaroundDeceleration: 50,
+			animation: [
+				{ spriteFrame: 54, frames: 3 }
+			]
+		},
+		airborne_block_end: {
+			airborneAcceleration: 50,
+			airborneTurnaroundDeceleration: 50,
+			animation: [
+				{ spriteFrame: 57, frames: 5 }
+			]
+		},
+		airborne_block_falloff: {
+			airborneAcceleration: 50,
+			airborneTurnaroundDeceleration: 50,
+			animation: [
+				{ spriteFrame: 46, frames: 8 },
+				{ spriteFrame: 47, frames: 8 }
+			]
+		},
 		jump_takeoff: {
 			airborneDeceleration: 0,
 			animation: [
@@ -130,8 +192,13 @@ define({
 		},
 		airborne: {
 			animation: [
-				{ spriteFrame: 32, frames: 8 },
-				{ spriteFrame: 33, frames: 8 }
+				{ spriteFrame: 32, frames: 14 },
+				{ spriteFrame: 33, frames: 14 }
+			]
+		},
+		airborne_jump: {
+			animation: [
+				{ spriteFrame: 43, frames: 8 }
 			]
 		},
 		airborne_falloff: {

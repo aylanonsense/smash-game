@@ -13,6 +13,15 @@ define({
 			center: { x: 46, y: 80 },
 			boundingBox: { x: 27, y: 47, width: 35, height: 33 },
 			color: '#318c23'
+		},
+		shield: {
+			path: '/sprites/shield.png',
+			frameWidth: 36,
+			frameHeight: 36,
+			scale: 2,
+			allowFlipping: false,
+			center: { x: 15, y: 36 },
+			boundingBox: { x: 3, y: 3, width: 30, height: 30 }
 		}
 	},
 
@@ -24,12 +33,11 @@ define({
 		40: 'DOWN', 83: 'DOWN', //down arrow / s key
 		39: 'RIGHT', 68: 'RIGHT', //right arrow / d key
 		32: 'JUMP', //space bar
-
+		16: 'BLOCK', //shift key
 		//90: 'LIGHT', 74: 'LIGHT', //z key / j key
 		//88: 'HEAVY', 75: 'HEAVY', //x key / k key
 		//67: 'SPECIAL', 76: 'SPECIAL', //c key / l key
 		//86: 'DASH', 70: 'DASH', //v key / f key
-		//TODO also need BLOCK
 		// 27: 'ESCAPE', //esc key
 		// 13: 'OK', //enter key
 	},
