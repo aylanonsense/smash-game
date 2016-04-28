@@ -32,6 +32,10 @@ define({
 	airborneTurnaroundDeceleration: 500,
 	airborneAboveMaxSpeedDeceleration: 100,
 
+	//dash physics
+	dashSpeed: 400,
+	airDashSpeed: 400,
+
 	//general physics
 	absoluteMaxHorizontalSpeed: 9999,
 	absoluteMaxVerticalSpeed: 9999,
@@ -206,6 +210,20 @@ define({
 				{ spriteFrame: 40, frames: 8 },
 				{ spriteFrame: 41, frames: 8 },
 				{ spriteFrame: 42, frames: 8 }
+			]
+		},
+		dash: {
+			airborneSoftMaxSpeed: 0,
+			airborneAcceleration: 0,
+			airborneDeceleration: 0,
+			airborneTurnaroundDeceleration: 0,
+			airborneAboveMaxSpeedDeceleration: 0,
+			gravity: 0,
+			animation: [
+				{ spriteFrame: 60, frames: 4 },
+				{ spriteFrame: 61, frames: 4 },
+				{ spriteFrame: 62, frames: 4 },
+				{ spriteFrame: 63, frames: 4 }
 			]
 		}
 	}

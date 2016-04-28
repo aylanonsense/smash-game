@@ -28,6 +28,8 @@ define([
 		this.airborneJumpsUsed = 0;
 		this.isBlocking = false;
 		this.framesSpentBlocking = 0;
+		this.framesSinceLastJump = 0;
+		this.framesSinceLastDash = 0;
 
 		//input variables
 		this.horizontalDir = 0;
@@ -40,6 +42,8 @@ define([
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function() {
 		this.framesInCurrentState++;
+		this.framesSinceLastJump++;
+		this.framesSinceLastDash++;
 		if(this.bufferedActionInput) {
 			this.bufferedActionInput.framesBuffered++;
 			if(this.bufferedActionInput.framesBuffered > 5) {
@@ -93,6 +97,13 @@ define([
 		//handle changes in blocking
 		if(key === 'BLOCK') {
 			this.isHoldingBlock = isDown;
+			if(isDown && this.horizontalDir !== 0) {
+				this.bufferedActionInput = {
+					action: 'DASH',
+					dir: this.horizontalDir,
+					framesBuffered: 0
+				};
+			}
 		}
 
 		//buffer inputs
@@ -107,6 +118,13 @@ define([
 				dir: (key === 'LEFT' ? -1 : 1),
 				framesBuffered: 0
 			};
+			if(this.isHoldingBlock) {
+				this.bufferedActionInput = {
+					action: 'DASH',
+					dir: this.horizontalDir,
+					framesBuffered: 0
+				};
+			}
 		}
 		else if((key === 'UP' || key === 'DOWN') && isDown) {
 			this.bufferedVerticalDirectionInput = {

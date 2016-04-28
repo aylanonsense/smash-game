@@ -1,10 +1,13 @@
 define({
 	standing: {
 		physics: 'standing',
-		conditions: null,
+		conditions: function() {
+			return this.platform;
+		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'run_start', cancel: true },
 			{ state: 'standing_turnaround_start', cancel: true },
 			{ state: 'block_start', cancel: true },
@@ -26,6 +29,7 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'standing_turnaround_start', frameCancel: true },
 			{ state: 'running_turnaround_end' },
 			{ state: 'standing_turnaround_end' },
@@ -39,6 +43,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'run_start', frameCancel: true },
 			{ state: 'standing_turnaround_start', cancel: true },
@@ -53,6 +58,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'crouch_start', cancel: true },
 			{ state: 'run_end', cancel: true },
@@ -73,6 +79,7 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_start', frameCancel: true },
 			{ state: 'standing_turnaround_start', frameCancel: true },
 			{ state: 'run_end_quick', frameCancel: true },
@@ -89,6 +96,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'run_start', frameCancel: true },
 			{ state: 'running_turnaround_start', frameCancel: true },
@@ -106,6 +114,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'standing' },
 			{ state: 'jump_takeoff', cancel: true },
 			{ state: 'airborne_falloff', cancel: true }
@@ -124,6 +133,7 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_end' },
 			{ state: 'standing_turnaround_end' },
 			{ state: 'jump_takeoff', cancel: true },
@@ -138,6 +148,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_start', cancel: true },
 			{ state: 'running' },
 			{ state: 'jump_takeoff', cancel: true },
@@ -293,6 +304,7 @@ define({
 		effectsOnLeave: function(nextState) {
 			this.platform = null;
 			if(nextState === 'airborne') {
+				this.framesSinceLastJump = 0;
 				var stillVelX = (this.platform ? this.platform.vel.x : 0);
 				var stillVelY = (this.platform ? this.platform.vel.y : 0);
 				//when jumping off the ground, you can get a little horizontal boost to start you out
@@ -333,6 +345,7 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'airborne_block_start', cancel: true },
 			{ state: 'jump_landing', cancel: true },
 			{ state: 'airborne_jump', cancel: true }
@@ -341,7 +354,7 @@ define({
 	airborne_jump: {
 		physics: 'airborne',
 		conditions: function() {
-			return (this.state !== 'airborne' || this.framesInCurrentState > 8) &&
+			return this.framesSinceLastJump > 8 &&
 				this.bufferedActionInput && this.bufferedActionInput.action === 'JUMP' &&
 				this.airborneJumpsUsed < this.getFrameDataValue('numAirborneJumps');
 		},
@@ -363,7 +376,9 @@ define({
 				this.facing = -this.facing;
 			}
 		},
-		effectsOnLeave: null,
+		effectsOnLeave: function(nextState) {
+			this.framesSinceLastJump = 0;
+		},
 		transitions: [
 			{ state: 'jump_landing', cancel: true },
 			{ state: 'airborne' }
@@ -377,8 +392,38 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'dash', cancel: true },
 			{ state: 'airborne_block_start', cancel: true },
 			{ state: 'airborne_jump', cancel: true },
+			{ state: 'airborne' }
+		]
+	},
+	dash: {
+		physics: 'airborne',
+		conditions: function() {
+			return this.bufferedActionInput && this.bufferedActionInput.action === 'DASH' &&
+				(this.platform || this.airborneJumpsUsed < this.getFrameDataValue('numAirborneJumps')) &&
+				this.framesSinceLastDash > 8;
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.facing = this.bufferedActionInput.dir;
+			this.bufferedActionInput = null;
+			var speed = this.getFrameDataValue(this.platform ? 'dashSpeed' : 'airDashSpeed');
+			var m = this.facing;
+			var stillVelX = (this.platform ? this.platform.vel.x : 0);
+			if(this.vel.x * m < stillVelX + speed) {
+				this.vel.x = stillVelX + speed * m;
+			}
+			this.vel.y = (this.platform ? this.platform.vel.y : 0);
+			if(!this.platform) {
+				this.airborneJumpsUsed++;
+			}
+		},
+		effectsOnLeave: function(nextState) {
+			this.framesSinceLastDash = 0;
+		},
+		transitions: [
+			{ state: 'standing' },
 			{ state: 'airborne' }
 		]
 	}
