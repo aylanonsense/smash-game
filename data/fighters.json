@@ -1,0 +1,16 @@
+{
+	"croc": {
+		"frameData": "/data/crocFrameData.json",
+		"hitboxData": "/sprites/croc-hitboxes.png",
+		"sprite": {
+			"path": "/sprites/croc.png",
+			"frameWidth": 100,
+			"frameHeight": 100,
+			"scale": 2,
+			"allowFlipping": true,
+			"center": { "x": 46, "y": 80 },
+			"boundingBox": { "x": 27, "y": 47, "width": 35, "height": 33 },
+			"color": "#318c23"
+		}
+	}
+}

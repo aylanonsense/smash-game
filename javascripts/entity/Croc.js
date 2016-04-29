@@ -1,7 +1,7 @@
 define([
 	'entity/Fighter',
 	'util/extend',
-	'data/crocFrameData'
+	'json!data/generated/frameData.json'
 ], function(
 	Fighter,
 	extend,

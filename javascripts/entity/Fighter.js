@@ -334,7 +334,7 @@ define([
 		//draw hurtboxes
 		if(config.SHOW_HITBOXES) {
 			for(var i = 0; i < this.hurtboxes.length; i++) {
-				draw.rect(this.hurtboxes[i].x, this.hurtboxes[i].y, this.hurtboxes[i].width, this.hurtboxes[i].height, { fill: 'rgba(255, 255, 0, 0.6)' });
+				draw.rect(this.hurtboxes[i].x, this.hurtboxes[i].y, this.hurtboxes[i].width, this.hurtboxes[i].height, { fill: 'rgba(255, 255, 0, 0.6)', stroke: 'rgba(255, 255, 0, 1)', thickness: 1 });
 			}
 		}
 
@@ -372,7 +372,7 @@ define([
 				this.hurtboxes.push(new Rect({
 					parent: this,
 					x: this.facing > 0 ? hurtboxes[i][0] : -hurtboxes[i][0] - hurtboxes[i][2],
-					y: -hurtboxes[i][1] - hurtboxes[i][3],
+					y: hurtboxes[i][1],
 					width: hurtboxes[i][2],
 					height: hurtboxes[i][3]
 				}));
