@@ -3,6 +3,7 @@ define({
 	RENDER: true,
 	CANVAS_WIDTH: 800,
 	CANVAS_HEIGHT: 600,
+	CAMERA_ZOOM: 1,
 	SPRITES: {
 		croc: {
 			path: '/sprites/croc.png',
@@ -34,8 +35,8 @@ define({
 		39: 'RIGHT', 68: 'RIGHT', //right arrow / d key
 		32: 'JUMP', //space bar
 		16: 'BLOCK', //shift key
-		//90: 'LIGHT', 74: 'LIGHT', //z key / j key
-		//88: 'HEAVY', 75: 'HEAVY', //x key / k key
+		90: 'LIGHT_ATTACK', 74: 'LIGHT_ATTACK', //z key / j key
+		88: 'HEAVY_ATTACK', 75: 'HEAVY_ATTACK', //x key / k key
 		//67: 'SPECIAL', 76: 'SPECIAL', //c key / l key
 		//86: 'DASH', 70: 'DASH', //v key / f key
 		// 27: 'ESCAPE', //esc key
@@ -49,7 +50,9 @@ define({
 
 	//debug
 	SHOW_FIGHTER_DEBUG_DATA: false,
-	DRAW_SPRITE_BOUNDING_BOXES: false,
+	SHOW_COLLISION_BOXES: false,
+	SHOW_SPRITE_BOUNDING_BOXES: false,
+	SHOW_HITBOXES: false,
 
 	//gameplay
 	MAX_MOVEMENT_PER_STEP: 10

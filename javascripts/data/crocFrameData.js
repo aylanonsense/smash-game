@@ -3,6 +3,7 @@ define({
 	width: 66,
 	height: 60,
 	sprite: 'croc',
+	hurtboxes: [ [ -18, 0, 40, 44 ], [ -12, 44, 40, 18 ], [ -28, 14, 10, 34 ] ],
 
 	//jump physics
 	gravity: 800,
@@ -49,6 +50,7 @@ define({
 			]
 		},
 		standing_turnaround_start: {
+			hurtboxes: [ [ -18, 0, 30, 64 ], [ 14, 0, 16, 38 ] ],
 			runningAcceleration: 500,
 			animation: [
 				{ spriteFrame: 20, frames: 2 },
@@ -61,6 +63,7 @@ define({
 			]
 		},
 		running: {
+			hurtboxes: [ [ -8, 12, 66, 30 ], [ -32, 12, 24, 20], [ -10, 0, 28, 12 ] ],
 			animation: [
 				{ spriteFrame: 12, frames: 7 },
 				{ spriteFrame: 13, frames: 7 },
@@ -69,20 +72,23 @@ define({
 			]
 		},
 		run_start: {
+			//TODO hurtboxes
 			runningAcceleration: 1300,
 			animation: [
-				{ spriteFrame: 10, frames: 2, frameCancels: [ 'standing_turnaround_start' ] },
-				{ spriteFrame: 10, frames: 3, frameCancels: [ 'standing_turnaround_start', 'run_end_quick', ] },
-				{ spriteFrame: 11, frames: 5, frameCancels: [ 'running_turnaround_start', 'run_end_quick' ] }
+				{ spriteFrame: 10, frames: 2, hurtboxes: [ [ -18, 0, 40, 38 ], [ -12, 44, 40, 18 ], [ -28, 14, 10, 20 ] ], frameCancels: [ 'standing_turnaround_start' ] },
+				{ spriteFrame: 10, frames: 3, hurtboxes: [ [ -18, 0, 40, 38 ], [ -12, 44, 40, 18 ], [ -28, 14, 10, 20 ] ], frameCancels: [ 'standing_turnaround_start', 'run_end_quick', ] },
+				{ spriteFrame: 11, frames: 5, hurtboxes: [ [ -8, 12, 66, 30 ], [ -32, 12, 24, 20], [ -10, 0, 28, 12 ] ], frameCancels: [ 'running_turnaround_start', 'run_end_quick' ] }
 			]
 		},
 		run_end_quick: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 17, frames: 4 },
 				{ spriteFrame: 18, frames: 4 }
 			]
 		},
 		run_end: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 16, frames: 6, frameCancels: [] },
 				{ spriteFrame: 17, frames: 6, frameCancels: [ 'run_start', 'running_turnaround_start' ] },
@@ -90,6 +96,7 @@ define({
 			]
 		},
 		running_turnaround_start: {
+			//TODO hurtboxes
 			runningAcceleration: 1300,
 			animation: [
 				{ spriteFrame: 22, frames: 3, runningWrongWayDeceleration: 600 },
@@ -97,6 +104,7 @@ define({
 			]
 		},
 		running_turnaround_end: {
+			//TODO hurtboxes
 			runningAcceleration: 1300,
 			animation: [
 				{ spriteFrame: 24, frames: 4 },
@@ -104,13 +112,16 @@ define({
 			]
 		},
 		crouching: {
+			//TODO hurtboxes
 			standingDeceleration: 450,
+			hurtboxes: [ [ -14, 0, 36, 50 ], [ -38, 0, 24, 28 ], [ 22, 14, 16, 36 ] ],
 			animation: [
 				{ spriteFrame: 4, frames: 14 },
 				{ spriteFrame: 5, frames: 14 }
 			]
 		},
 		crouch_start: {
+			//TODO hurtboxes
 			standingDeceleration: 450,
 			animation: [
 				{ spriteFrame: 2, frames: 6 },
@@ -118,12 +129,14 @@ define({
 			]
 		},
 		crouch_end: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 6, frames: 6 },
 				{ spriteFrame: 7, frames: 5, frameCancels: [ 'standing_turnaround_start', 'run_start' ] }
 			]
 		},
 		blocking: {
+			//TODO hurtboxes
 			standingAboveMaxSpeedDecelerationeleration: 500,
 			animation: [
 				{ spriteFrame: 51, frames: 14 },
@@ -131,17 +144,20 @@ define({
 			]
 		},
 		block_start: {
+			//TODO hurtboxes
 			standingDeceleration: 500,
 			animation: [
 				{ spriteFrame: 50, frames: 3 }
 			]
 		},
 		block_end: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 53, frames: 5 }
 			]
 		},
 		block_landing: {
+			//TODO hurtboxes
 			standingDeceleration: 500,
 			animation: [
 				{ spriteFrame: 44, frames: 3 },
@@ -149,6 +165,7 @@ define({
 			]
 		},
 		airborne_blocking: {
+			//TODO hurtboxes
 			airborneAcceleration: 50,
 			airborneTurnaroundDeceleration: 50,
 			animation: [
@@ -157,6 +174,7 @@ define({
 			]
 		},
 		airborne_block_start: {
+			//TODO hurtboxes
 			airborneAcceleration: 50,
 			airborneTurnaroundDeceleration: 50,
 			animation: [
@@ -164,6 +182,7 @@ define({
 			]
 		},
 		airborne_block_end: {
+			//TODO hurtboxes
 			airborneAcceleration: 50,
 			airborneTurnaroundDeceleration: 50,
 			animation: [
@@ -171,6 +190,7 @@ define({
 			]
 		},
 		airborne_block_falloff: {
+			//TODO hurtboxes
 			airborneAcceleration: 50,
 			airborneTurnaroundDeceleration: 50,
 			animation: [
@@ -179,6 +199,7 @@ define({
 			]
 		},
 		jump_takeoff: {
+			//TODO hurtboxes
 			airborneDeceleration: 0,
 			animation: [
 				{ spriteFrame: 30, frames: 3 },
@@ -186,6 +207,7 @@ define({
 			]
 		},
 		jump_landing: {
+			//TODO hurtboxes
 			standingDeceleration: 500,
 			animation: [
 				{ spriteFrame: 34, frames: 3 },
@@ -195,17 +217,20 @@ define({
 			]
 		},
 		airborne: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 32, frames: 14 },
 				{ spriteFrame: 33, frames: 14 }
 			]
 		},
 		airborne_jump: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 43, frames: 8 }
 			]
 		},
 		airborne_falloff: {
+			//TODO hurtboxes
 			animation: [
 				{ spriteFrame: 40, frames: 8 },
 				{ spriteFrame: 41, frames: 8 },
@@ -213,6 +238,7 @@ define({
 			]
 		},
 		dash: {
+			//TODO hurtboxes
 			airborneSoftMaxSpeed: 0,
 			airborneAcceleration: 0,
 			airborneDeceleration: 0,
@@ -224,6 +250,22 @@ define({
 				{ spriteFrame: 61, frames: 4 },
 				{ spriteFrame: 62, frames: 4 },
 				{ spriteFrame: 63, frames: 4 }
+			]
+		},
+		light_neutral_attack: {
+			//TODO hurtboxes
+			animation: [
+				{ spriteFrame: 70, frames: 7 },
+				{ spriteFrame: 71, frames: 7 },
+				{ spriteFrame: 72, frames: 7 }
+			]
+		},
+		light_forward_attack: {
+			//TODO hurtboxes
+			animation: [
+				{ spriteFrame: 73, frames: 12 },
+				{ spriteFrame: 74, frames: 12 },
+				{ spriteFrame: 75, frames: 12 }
 			]
 		}
 	}

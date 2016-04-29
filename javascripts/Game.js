@@ -64,6 +64,8 @@ define([
 		}
 	};
 	Game.prototype.render = function() {
+		camera.pos.x = this.player.pos.x * camera.zoom - (config.CANVAS_WIDTH / 2);
+		camera.pos.y = (this.player.pos.y - this.player.height / 2) * camera.zoom - (config.CANVAS_HEIGHT / 2);
 		//clear canvas
 		draw.rect(0, 0, config.CANVAS_WIDTH, config.CANVAS_HEIGHT, { fill: '#000', fixed: true });
 

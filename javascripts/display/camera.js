@@ -7,6 +7,6 @@ define([
 ) {
 	return {
 		pos: new Vector(-config.CANVAS_WIDTH / 2, -config.CANVAS_HEIGHT / 2),
-		zoom: 1
+		zoom: config.CAMERA_ZOOM
 	};
 });

@@ -2,12 +2,14 @@ define([
 	'config',
 	'entity/Entity',
 	'util/extend',
+	'math/Rect',
 	'data/fighterStates',
 	'display/draw'
 ], function(
 	config,
 	Entity,
 	extend,
+	Rect,
 	fighterStates,
 	draw
 ) {
@@ -30,6 +32,7 @@ define([
 		this.framesSpentBlocking = 0;
 		this.framesSinceLastJump = 0;
 		this.framesSinceLastDash = 0;
+		this.hurtboxes = [];
 
 		//input variables
 		this.horizontalDir = 0;
@@ -98,43 +101,33 @@ define([
 		if(key === 'BLOCK') {
 			this.isHoldingBlock = isDown;
 			if(isDown && this.horizontalDir !== 0) {
-				this.bufferedActionInput = {
-					action: 'DASH',
-					dir: this.horizontalDir,
-					framesBuffered: 0
-				};
+				this.bufferedActionInput = { action: 'DASH', dir: this.horizontalDir, framesBuffered: 0 };
 			}
 		}
 
 		//buffer inputs
 		if(key === 'JUMP' && isDown) {
-			this.bufferedActionInput = {
-				action: 'JUMP',
-				framesBuffered: 0
-			};
+			this.bufferedActionInput = { action: 'JUMP', framesBuffered: 0 };
 		}
 		else if((key === 'LEFT' || key === 'RIGHT') && isDown) {
-			this.bufferedHorizontalDirectionInput = {
-				dir: (key === 'LEFT' ? -1 : 1),
-				framesBuffered: 0
-			};
+			this.bufferedHorizontalDirectionInput = { dir: (key === 'LEFT' ? -1 : 1), framesBuffered: 0 };
 			if(this.isHoldingBlock) {
-				this.bufferedActionInput = {
-					action: 'DASH',
-					dir: this.horizontalDir,
-					framesBuffered: 0
-				};
+				this.bufferedActionInput = { action: 'DASH', dir: this.horizontalDir, framesBuffered: 0 };
 			}
 		}
 		else if((key === 'UP' || key === 'DOWN') && isDown) {
-			this.bufferedVerticalDirectionInput = {
-				dir: (key === 'UP' ? -1 : 1),
-				framesBuffered: 0
-			};
+			this.bufferedVerticalDirectionInput = { dir: (key === 'UP' ? -1 : 1), framesBuffered: 0 };
+		}
+		else if(key === 'LIGHT_ATTACK' && isDown && this.horizontalDir === 0) {
+			this.bufferedActionInput = { action: 'LIGHT_NEUTRAL_ATTACK', framesBuffered: 0 };
+		}
+		else if(key === 'LIGHT_ATTACK' && isDown && this.horizontalDir !== 0) {
+			this.bufferedActionInput = { action: 'LIGHT_FORWARD_ATTACK', dir: this.horizontalDir, framesBuffered: 0 };
 		}
 
 		//check for state transitions
 		this.checkForStateTransitions();
+		this.recalculateHitBoxes();
 	};
 	Fighter.prototype.move = function(platforms) {
 		//apply physics
@@ -312,6 +305,7 @@ define([
 
 		//check for state transitions
 		this.checkForStateTransitions();
+		this.recalculateHitBoxes();
 	};
 	Fighter.prototype.handleCollision = function(platform, dir) {
 		if(dir === 'bottom') {
@@ -337,13 +331,23 @@ define([
 			draw.sprite('shield', 2, this.pos.x, this.pos.y);
 		}
 
+		//draw hurtboxes
+		if(config.SHOW_HITBOXES) {
+			for(var i = 0; i < this.hurtboxes.length; i++) {
+				draw.rect(this.hurtboxes[i].x, this.hurtboxes[i].y, this.hurtboxes[i].width, this.hurtboxes[i].height, { fill: 'rgba(255, 255, 0, 0.6)' });
+			}
+		}
+
 		//draw debug data
 		if(config.SHOW_FIGHTER_DEBUG_DATA) {
 			//draw info below the sprite
 			draw.text(this.state, this.pos.x, this.pos.y + 15, { fontSize: 14, color: '#fff', align: 'center' });
 			draw.text('(frame ' + (this.framesInCurrentState + 1) + ')', this.pos.x, this.pos.y + 27, { fontSize: 10, color: '#aaa', align: 'center' });
 			draw.text('speed = ' + Math.floor(Math.abs(this.vel.x)), this.pos.x, this.pos.y + 42, { fontSize: 14, color: '#ccc', align: 'center' });
+		}
 
+		//draw collision boxes
+		if(config.SHOW_COLLISION_BOXES) {
 			//draw collision boxes
 			draw.poly(this.collisionBoxes.left.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.top.top,
 				this.collisionBoxes.top.right, this.collisionBoxes.top.top,  this.collisionBoxes.top.right, this.collisionBoxes.right.top,  this.collisionBoxes.right.right, this.collisionBoxes.right.top,
@@ -358,6 +362,21 @@ define([
 		var stateHasChanged = this.checkForStateTransition();
 		for(var numTransitions = 0; numTransitions < 10 && stateHasChanged; numTransitions++) {
 			stateHasChanged = this.checkForStateTransition();
+		}
+	};
+	Fighter.prototype.recalculateHitBoxes = function() {
+		this.hurtboxes = [];
+		var hurtboxes = this.getFrameDataValue('hurtboxes');
+		if(hurtboxes) {
+			for(var i = 0; i < hurtboxes.length; i++) {
+				this.hurtboxes.push(new Rect({
+					parent: this,
+					x: this.facing > 0 ? hurtboxes[i][0] : -hurtboxes[i][0] - hurtboxes[i][2],
+					y: -hurtboxes[i][1] - hurtboxes[i][3],
+					width: hurtboxes[i][2],
+					height: hurtboxes[i][3]
+				}));
+			}
 		}
 	};
 	Fighter.prototype.checkForStateTransition = function() {

@@ -7,6 +7,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'run_start', cancel: true },
 			{ state: 'standing_turnaround_start', cancel: true },
@@ -29,6 +31,8 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'standing_turnaround_start', frameCancel: true },
 			{ state: 'running_turnaround_end' },
@@ -43,6 +47,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'run_start', frameCancel: true },
@@ -58,6 +64,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'crouch_start', cancel: true },
@@ -79,6 +87,8 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_start', frameCancel: true },
 			{ state: 'standing_turnaround_start', frameCancel: true },
@@ -96,6 +106,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'block_start', cancel: true },
 			{ state: 'run_start', frameCancel: true },
@@ -114,6 +126,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'standing' },
 			{ state: 'jump_takeoff', cancel: true },
@@ -133,6 +147,8 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_end' },
 			{ state: 'standing_turnaround_end' },
@@ -148,6 +164,8 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
+			{ state: 'light_neutral_attack', cancel: true },
+			{ state: 'light_forward_attack', cancel: true },
 			{ state: 'dash', cancel: true },
 			{ state: 'running_turnaround_start', cancel: true },
 			{ state: 'running' },
@@ -425,6 +443,35 @@ define({
 		transitions: [
 			{ state: 'standing' },
 			{ state: 'airborne' }
+		]
+	},
+	light_neutral_attack: {
+		physics: 'standing',
+		conditions: function() {
+			return this.bufferedActionInput && this.bufferedActionInput.action === 'LIGHT_NEUTRAL_ATTACK';
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.bufferedActionInput = null;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: 'standing' }
+		]
+	},
+	light_forward_attack: {
+		physics: 'standing',
+		conditions: function() {
+			return this.bufferedActionInput && this.bufferedActionInput.action === 'LIGHT_FORWARD_ATTACK';
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			if(this.bufferedActionInput.dir !== 0) {
+				this.facing = this.bufferedActionInput.dir;
+			}
+			this.bufferedActionInput = null;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: 'standing' }
 		]
 	}
 });

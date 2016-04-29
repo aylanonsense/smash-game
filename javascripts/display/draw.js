@@ -162,7 +162,7 @@ define([
 				if(!sprites[spriteKey]) {
 					sprites[spriteKey] = new Sprite(config.SPRITES[spriteKey]);
 				}
-				if(config.DRAW_SPRITE_BOUNDING_BOXES) {
+				if(config.SHOW_SPRITE_BOUNDING_BOXES) {
 					var sprite = config.SPRITES[spriteKey];
 					var result = applyDrawParams({
 						fixed: params && params.fixed,
