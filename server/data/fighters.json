@@ -1,7 +1,7 @@
 {
 	"croc": {
 		"frameDataFilePath": "/data/crocRawFrameData.json",
-		"hurtboxImagePath": "/sprites/croc-hitboxes.png",
+		"hurtboxImagePath": "/sprites/croc-hurtboxes.png",
 		"sprite": {
 			"imagePath": "/sprites/croc.png",
 			"frameWidth": 100,

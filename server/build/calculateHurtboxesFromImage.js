@@ -31,7 +31,7 @@ define([
 							var r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
 							//blue means hurtboxes
 							if(b > 0) {
-								hurtboxData[x][y] = true;
+								hurtboxData[x][y] = b;
 							}
 						}
 					}

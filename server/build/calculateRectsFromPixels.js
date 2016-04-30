@@ -9,7 +9,7 @@ define(function() {
 					//figure out how wide of a rect could possibly fit into that space
 					var maxX;
 					for(maxX = x + 1; maxX < width; maxX++) {
-						if(!data[maxX][y]) {
+						if(data[maxX][y] !== data[x][y]) {
 							break;
 						}
 					}
@@ -19,7 +19,7 @@ define(function() {
 					var maxY;
 					for(maxY = y + 1; maxY < height; maxY++) {
 						for(x2 = x; x2 < maxX; x2++) {
-							if(!data[x2][maxY]) {
+							if(data[x2][maxY] !== data[x][y]) {
 								hasFoundRectDimensions = true;
 								break;
 							}

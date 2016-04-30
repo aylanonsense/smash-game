@@ -3,12 +3,14 @@ define([
 	'entity/Entity',
 	'util/extend',
 	'display/draw',
+	'geom/Rect',
 	'data/fighterStates'
 ], function(
 	config,
 	Entity,
 	extend,
 	draw,
+	Rect,
 	fighterStates
 ) {
 	function Fighter(params) {
@@ -20,7 +22,7 @@ define([
 		}));
 
 		//state
-		this.state = 'airborne';
+		this.state = 'standing';
 		this.framesInCurrentState = 0;
 		this.facing = params.facing || 1;
 		this.framesSinceLastJump = 0;
@@ -248,7 +250,6 @@ define([
 		var moveSteps = Math.max(1, Math.ceil(Math.max(Math.abs(this.vel.x / 60), Math.abs(this.vel.y / 60)) / config.MAX_MOVEMENT_PER_STEP));
 		for(var i = 0; i < moveSteps; i++) {
 			//move in steps to avoid clipping through a platform
-			console.log((this.vel.x / 60) / moveSteps, (this.vel.y / 60) / moveSteps);
 			this.pos.x += (this.vel.x / 60) / moveSteps;
 			this.pos.y += (this.vel.y / 60) / moveSteps;
 			//check for collisions
@@ -284,6 +285,9 @@ define([
 
 		//check for state transitions
 		this.checkForStateTransitions();
+
+		//update hitboxes
+		this.recalculateHitBoxes();
 	};
 	Fighter.prototype.endOfFrame = function() {};
 	Fighter.prototype.render = function() {
@@ -365,6 +369,22 @@ define([
 		//apply effects from entering the new state
 		if(fighterStates[this.state].effectsOnEnter) {
 			fighterStates[this.state].effectsOnEnter.call(this, prevState, prevFrames);
+		}
+	};
+	Fighter.prototype.recalculateHitBoxes = function() {
+		this.hurtboxes = [];
+		var frame = this.getFrameDataValue('spriteFrame');
+		var hurtboxes = this.frameData.hurtboxes[frame];
+		if(hurtboxes) {
+			for(var i = 0; i < hurtboxes.length; i++) {
+				this.hurtboxes.push(new Rect({
+					parent: this,
+					x: this.facing > 0 ? hurtboxes[i][0] : -hurtboxes[i][0] - hurtboxes[i][2],
+					y: hurtboxes[i][1],
+					width: hurtboxes[i][2],
+					height: hurtboxes[i][3]
+				}));
+			}
 		}
 	};
 	Fighter.prototype.getFrameDataValue = function(key) {
