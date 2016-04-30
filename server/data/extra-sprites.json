@@ -1,0 +1,9 @@
+{
+	"shield": {
+		"imagePath": "/sprites/shield.png",
+		"frameWidth": 36,
+		"frameHeight": 36,
+		"scale": 2,
+		"center": { "x": 15, "y": 36 }
+	}
+}
