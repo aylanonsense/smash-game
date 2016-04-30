@@ -20,23 +20,18 @@ define([
 
 		//create platforms
 		this.level = [
-			new Platform({ x: -600, y: 50, width: 250, height: 650 }),
-			new Platform({ x: -350, y: 0, width: 700, height: 700 }),
-			new Platform({ x: 350, y: 150, width: 400, height: 550 }),
-			new Platform({ x: 550, y: -175, width: 125, height: 200 }),
-			new Platform({ x: 25, y: -125, width: 125, height: 25 }),
-			new Platform({ x: 150, y: -250, width: 125, height: 25 }),
-			new Platform({ x: 25, y: -375, width: 125, height: 25 })
+			new Platform({ x: -625, y: 50, width: 225, height: 700 }),
+			new Platform({ x: -400, y: 0, width: 625, height: 750 }),
+			new Platform({ x: 225, y: 125, width: 350, height: 625 }),
+			new Platform({ x: 425, y: -150, width: 100, height: 175 }),
+			new Platform({ x: -50, y: -125, width: 125, height: 25 }),
+			new Platform({ x: 50, y: -250, width: 125, height: 25 }),
+			new Platform({ x: -50, y: -375, width: 125, height: 22.5 })
 		];
-		this.minX = -1100;
-		this.maxX = 1250;
-		this.minY = -800;
-		this.maxY = 700;
-
-		//adjust camera
-		camera.pos.x = 75;
-		camera.pos.y = -125;
-		camera.zoom = 1;
+		this.levelLeftBound = -1150;
+		this.levelRightBound = 1150;
+		this.levelTopBound = -750;
+		this.levelBottomBound = 750;
 
 		//listen for inputs
 		this.bufferedInputs = [];
@@ -69,12 +64,23 @@ define([
 		}
 	};
 	Game.prototype.render = function() {
-		// var centerBetweenPlayers = this.fighters[0].pos.clone().average(this.fighters[1].pos);
-		// camera.pos.set(centerBetweenPlayers);
+		//adjust camera to follow both players
+		var fighter1 = this.fighters[0], fighter2 = this.fighters[1];
+		var fighterAvgX = (fighter1.pos.x + fighter2.pos.x) / 2;
+		var fighterAvgY = (fighter1.top + fighter2.top) / 4;
+		var horizontalDist = Math.max(fighter1.right, fighter2.right) - Math.min(fighter1.left, fighter2.left);
+		var verticalDist = Math.max(fighter1.bottom, fighter2.bottom) - Math.min(fighter1.top, fighter2.top);
+		var zoom = Math.min(1.25, 1 / Math.max(2 * horizontalDist / config.CANVAS_WIDTH, 2 * verticalDist / config.CANVAS_HEIGHT));
+		camera.pos.x = (camera.pos.x * 20 + fighterAvgX) / 21;
+		camera.pos.y = (camera.pos.y * 20 + fighterAvgY) / 21;
+		camera.zoom = (camera.zoom * 20 + zoom) / 21;
 
 		//clear canvas
 		draw.rect(0, 0, config.CANVAS_WIDTH, config.CANVAS_HEIGHT, { fill: '#000', fixed: true });
-		draw.rect(this.minX, this.minY, this.maxX - this.minX, this.maxY - this.minY, { stroke: '#fff', thickness: 2 });
+
+		//draw level bounds
+		draw.rect(this.levelLeftBound, this.levelTopBound, this.levelRightBound - this.levelLeftBound,
+			this.levelBottomBound - this.levelTopBound, { stroke: '#fff', thickness: 2 });
 
 		//draw level
 		for(var i = 0; i < this.level.length; i++) {

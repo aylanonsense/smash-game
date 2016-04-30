@@ -17,7 +17,7 @@
 
 	"FRAMES_PER_SECOND": null,
 
-	"SHOW_HITBOXES": true,
+	"SHOW_HITBOXES": false,
 	"SHOW_COLLISION_BOXES": false,
 	"SHOW_FIGHTER_DEBUG_DATA": false,
 
