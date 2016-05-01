@@ -3,33 +3,36 @@ define([
 	'entity/Entity',
 	'util/extend',
 	'display/draw',
-	'geom/Rect',
+	'entity/hitbox/Hurtbox',
+	'entity/hitbox/Hitbox',
 	'data/fighterStates'
 ], function(
 	config,
 	Entity,
 	extend,
 	draw,
-	Rect,
+	Hurtbox,
+	Hitbox,
 	fighterStates
 ) {
 	function Fighter(params) {
-		this.frameData = params.frameData;
-
 		Entity.call(this, extend(params, {
-			width: this.frameData.width,
-			height: this.frameData.height
+			width: params.frameData.width,
+			height: params.frameData.height
 		}));
 
 		//state
+		this.frameData = params.frameData;
 		this.state = 'standing';
 		this.framesInCurrentState = 0;
 		this.facing = params.facing || 1;
 		this.framesSinceLastJump = 0;
 		this.framesSinceLastDash = 0;
 		this.airborneJumpsUsed = 0;
-		this.hurtboxes = [];
 		this.platform = null;
+		this.hitboxes = [];
+		this.hurtboxes = [];
+		this.recentHits = [];
 
 		//input
 		this.heldHorizontalDir = 0;
@@ -289,6 +292,54 @@ define([
 		//update hitboxes
 		this.recalculateHitBoxes();
 	};
+	Fighter.prototype.checkForHit = function(fighter) {
+		var i, j, k;
+
+		//check to see if any hitboxes are hitting the other fighter's hurtboxes
+		for(i = 0; i < this.hitboxes.length; i++) {
+			for(j = 0; j < fighter.hurtboxes.length; j++) {
+				if(this.hitboxes[i].isOverlapping(fighter.hurtboxes[j])) {
+					//do not allow a hitbox or hitbox group to hit someone twice
+					var hasAlreadyBeenHit = false;
+					for(k = 0; k < this.recentHits.length; k++) {
+						if(this.recentHits[k].defender.sameAs(fighter) && this.recentHits[k].hitbox.group === this.hitboxes[i].group) {
+							hasAlreadyBeenHit = true;
+						}
+					}
+					if(!hasAlreadyBeenHit) {
+						return {
+							attacker: this,
+							defender: fighter,
+							hitbox: this.hitboxes[i],
+							clank: false
+						};
+					}
+				}
+			}
+		}
+
+		/*
+		//if there is no hit, check to see if any hitboxes are hitting the other fighters' hitboxes
+		for(i = 0; i < this.hitboxes.length; i++) {
+			for(j = 0; k < fighter.hitboxes.length; j++) {
+				if(this.hitboxes[i].isOverlapping(fighter.hitboxes[j])) {
+					return {
+						attacker: this,
+						defender: fighter,
+						hitbox: this.hitboxes[i],
+						clank: true
+					};
+				}
+			}
+		}
+		*/
+	};
+	Fighter.prototype.handleHitting = function(hit) {
+		this.recentHits.push(hit);
+	};
+	Fighter.prototype.handleBeingHit = function(hit) {
+		this.vel.y = -600; //TODO
+	};
 	Fighter.prototype.endOfFrame = function() {};
 	Fighter.prototype.render = function() {
 		//draw sprite
@@ -302,7 +353,10 @@ define([
 		//draw hurtboxes
 		if(config.SHOW_HITBOXES) {
 			for(var i = 0; i < this.hurtboxes.length; i++) {
-				draw.rect(this.hurtboxes[i].x, this.hurtboxes[i].y, this.hurtboxes[i].width, this.hurtboxes[i].height, { fill: 'rgba(255, 255, 0, 0.6)', stroke: 'rgba(255, 255, 0, 1)', thickness: 1 });
+				this.hurtboxes[i].render();
+			}
+			for(i = 0; i < this.hitboxes.length; i++) {
+				this.hitboxes[i].render();
 			}
 		}
 
@@ -366,23 +420,42 @@ define([
 		var prevFrames = this.framesInCurrentState;
 		this.state = state;
 		this.framesInCurrentState = frame || 0;
+		this.recentHits = [];
 		//apply effects from entering the new state
 		if(fighterStates[this.state].effectsOnEnter) {
 			fighterStates[this.state].effectsOnEnter.call(this, prevState, prevFrames);
 		}
 	};
 	Fighter.prototype.recalculateHitBoxes = function() {
-		this.hurtboxes = [];
-		var frame = this.getFrameDataValue('spriteFrame');
-		var hurtboxes = this.frameData.hurtboxes[frame];
-		if(hurtboxes) {
-			for(var i = 0; i < hurtboxes.length; i++) {
-				this.hurtboxes.push(new Rect({
+		var i;
+
+		//create rects out of hitbox data
+		this.hitboxes = [];
+		var hitboxes = this.getFrameDataValue('hitboxes');
+		if(hitboxes) {
+			for(i = 0; i < hitboxes.length; i++) {
+				this.hitboxes.push(new Hitbox({
 					parent: this,
-					x: this.facing > 0 ? hurtboxes[i][0] : -hurtboxes[i][0] - hurtboxes[i][2],
-					y: hurtboxes[i][1],
-					width: hurtboxes[i][2],
-					height: hurtboxes[i][3]
+					x: this.facing > 0 ? hitboxes[i].x : -hitboxes[i].x - hitboxes[i].width,
+					y: hitboxes[i].y,
+					width: hitboxes[i].width,
+					height: hitboxes[i].height,
+					group: hitboxes[i].group
+				}));
+			}
+		}
+
+		//create rects out of hurtbox data
+		this.hurtboxes = [];
+		var hurtboxes = this.getFrameDataValue('hurtboxes');
+		if(hurtboxes) {
+			for(i = 0; i < hurtboxes.length; i++) {
+				this.hurtboxes.push(new Hurtbox({
+					parent: this,
+					x: this.facing > 0 ? hurtboxes[i].x : -hurtboxes[i].x - hurtboxes[i].width,
+					y: hurtboxes[i].y,
+					width: hurtboxes[i].width,
+					height: hurtboxes[i].height
 				}));
 			}
 		}

@@ -16,7 +16,7 @@ define([
 	function Game() {
 		//create fighters
 		this.player = new Croc({ x: -125, y: -200, facing: 1 });
-		this.fighters = [ this.player, new Croc({ x: 275, y: 0, facing: -1 }) ];
+		this.fighters = [ new Croc({ x: 275, y: 0, facing: -1 }), this.player ];
 
 		//create platforms
 		this.level = [
@@ -40,8 +40,10 @@ define([
 		}, this);
 	}
 	Game.prototype.update = function() {
+		var i, j;
+
 		//update/reset frame counters and the like
-		for(var i = 0; i < this.fighters.length; i++) {
+		for(i = 0; i < this.fighters.length; i++) {
 			this.fighters[i].startOfFrame();
 		}
 
@@ -56,6 +58,27 @@ define([
 		//move entity positions
 		for(i = 0; i < this.fighters.length; i++) {
 			this.fighters[i].move(this.level);
+		}
+
+		//check for hits
+		var hits = [];
+		for(i = 0; i < this.fighters.length; i++) {
+			for(j = i + 1; j < this.fighters.length; j++) {
+				var hit1 = this.fighters[i].checkForHit(this.fighters[j]);
+				var hit2 = this.fighters[j].checkForHit(this.fighters[i]);
+				if(hit1) {
+					hits.push(hit1);
+				}
+				if(hit2) {
+					hits.push(hit2);
+				}
+			}
+		}
+
+		//handle hits
+		for(i = 0; i < hits.length; i++) {
+			hits[i].attacker.handleHitting(hits[i]);
+			hits[i].defender.handleBeingHit(hits[i]);
 		}
 
 		//prep for next frame
