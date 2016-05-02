@@ -53,6 +53,9 @@ define([
 						for(var i = 0; i < frameData.states[state].animation.length; i++) {
 							var hitboxFrame = frameData.states[state].animation[i].hitboxFrame;
 							if(typeof hitboxFrame !== 'undefined') {
+								if(!frameData.states[state].animation[i].hitboxes) {
+									throw new Error('fighter=' + id + ' state=' + state + ' frame=' + i + ' has a hitboxFrame but no hitboxes array');
+								}
 								for(var j = 0; j < frameData.states[state].animation[i].hitboxes.length; j++) {
 									var hitbox = frameData.states[state].animation[i].hitboxes[j];
 									hitbox.x = (hitboxData[hitboxFrame][j].x - fighters[id].sprite.center.x) * fighters[id].sprite.scale;

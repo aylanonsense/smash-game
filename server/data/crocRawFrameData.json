@@ -222,15 +222,35 @@
 		"light_neutral_attack": {
 			"animation": [
 				{ "spriteFrame": 70, "frames": 7 },
-				{ "spriteFrame": 71, "frames": 7, "hitboxFrame": 1, "hitboxes": [ { "damage": 5, "group": "swipe" } ] },
-				{ "spriteFrame": 72, "frames": 7, "hitboxFrame": 2, "hitboxes": [ { "damage": 5, "group": "swipe" } ] }
+				{ "spriteFrame": 71, "frames": 7, "hitboxFrame": 1, "hitboxes": [ { "damage": 5, "knockback": 200, "stun": 30, "freeze": 7, "angle": 110} ] },
+				{ "spriteFrame": 72, "frames": 7 }
 			]
 		},
 		"light_forward_attack": {
 			"animation": [
 				{ "spriteFrame": 73, "frames": 12 },
-				{ "spriteFrame": 74, "frames": 12, "hitboxFrame": 4, "hitboxes": [ { "damage": 5 } ] },
-				{ "spriteFrame": 75, "frames": 12, "hitboxFrame": 5, "hitboxes": [ { "damage": 5 } ] }
+				{ "spriteFrame": 74, "frames": 12, "hitboxFrame": 4, "hitboxes": [ { "damage": 10, "knockback": 300, "stun": 30, "freeze": 20, "angle": 140 } ] },
+				{ "spriteFrame": 75, "frames": 12, "hitboxFrame": 5, "hitboxes": [ { "damage": 5, "knockback": 300, "stun": 30, "freeze": 7, "angle": 120 } ] }
+			]
+		},
+		"pain": {
+			"animation": [
+				{ "spriteFrame": 90, "frames": 1 }
+			]
+		},
+		"pain_recovery": {
+			"animation": [
+				{ "spriteFrame": 91, "frames": 7 }
+			]
+		},
+		"airborne_pain": {
+			"animation": [
+				{ "spriteFrame": 92, "frames": 1 }
+			]
+		},
+		"airborne_pain_recovery": {
+			"animation": [
+				{ "spriteFrame": 93, "frames": 7 }
 			]
 		}
 	}

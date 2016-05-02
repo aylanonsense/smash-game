@@ -28,6 +28,8 @@ define([
 		this.facing = params.facing || 1;
 		this.framesSinceLastJump = 0;
 		this.framesSinceLastDash = 0;
+		this.framesOfFreezeLeft = 0;
+		this.framesOfStunLeft = 0;
 		this.airborneJumpsUsed = 0;
 		this.platform = null;
 		this.hitboxes = [];
@@ -51,9 +53,15 @@ define([
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function() {
-		this.framesInCurrentState++;
-		this.framesSinceLastJump++;
-		this.framesSinceLastDash++;
+		if(this.framesOfFreezeLeft > 0) {
+			this.framesOfFreezeLeft--;
+		}
+		if(this.framesOfFreezeLeft === 0) {
+			this.framesInCurrentState++;
+			this.framesSinceLastJump++;
+			this.framesSinceLastDash++;
+			this.framesOfStunLeft--;
+		}
 
 		//increment input buffer timers
 		if(this.bufferedAction) {
@@ -110,151 +118,155 @@ define([
 		}
 
 		//after each input, check to see if that changes the state
-		this.checkForStateTransitions();
+		if(this.framesOfFreezeLeft === 0) {
+			this.checkForStateTransitions();
+		}
 	};
 	Fighter.prototype.move = function(platforms) {
-		//apply physics
-		var m, stillVelX = (this.platform ? this.platform.vel.x : 0), stillVelY = 0;
-		if(fighterStates[this.state].physics === 'standing') {
-			//standing physics just involves slowly decelerating until still
-			var standingDeceleration = this.getFrameDataValue('standingDeceleration');
-			var standingSoftMaxSpeed = this.getFrameDataValue('standingSoftMaxSpeed');
-			var standingAboveMaxSpeedDeceleration = this.getFrameDataValue('standingAboveMaxSpeedDeceleration');
-			m = this.vel.x > stillVelX ? 1 : -1; //1 if moving right, -1 if moving left
-			//decelerate move speed
-			if(this.vel.x * m > stillVelX * m + standingSoftMaxSpeed) {
-				this.vel.x -= standingAboveMaxSpeedDeceleration * m / 60;
-			}
-			else {
-				this.vel.x -= standingDeceleration * m / 60;
-			}
-			//don't decelerate past the still velocity
-			if(this.vel.x * m < stillVelX * m) {
-				this.vel.x = stillVelX;
-			}
-		}
-		else if(fighterStates[this.state].physics === 'running') {
-			//when running we assume the player is moving continually in the direction they are facing
-			var runningSoftMaxSpeed = this.getFrameDataValue('runningSoftMaxSpeed');
-			var runningAcceleration = this.getFrameDataValue('runningAcceleration');
-			var runningWrongWayDeceleration = this.getFrameDataValue('runningWrongWayDeceleration');
-			var runningAboveMaxSpeedDeceleration = this.getFrameDataValue('runningAboveMaxSpeedDeceleration');
-			m = this.facing; //1 if facing right, -1 if facing left
-			//running above max speed, decelerate
-			if(this.vel.x * m > stillVelX * m + runningSoftMaxSpeed) {
-				this.vel.x -= runningAboveMaxSpeedDeceleration * m / 60;
-				//don't decelerate past the max speed
-				if(this.vel.x * m < stillVelX * m + runningSoftMaxSpeed) {
-					this.vel.x = stillVelX + runningSoftMaxSpeed * m;
+		if(this.framesOfFreezeLeft === 0) {
+			//apply physics
+			var m, stillVelX = (this.platform ? this.platform.vel.x : 0), stillVelY = 0;
+			if(fighterStates[this.state].physics === 'standing') {
+				//standing physics just involves slowly decelerating until still
+				var standingDeceleration = this.getFrameDataValue('standingDeceleration');
+				var standingSoftMaxSpeed = this.getFrameDataValue('standingSoftMaxSpeed');
+				var standingAboveMaxSpeedDeceleration = this.getFrameDataValue('standingAboveMaxSpeedDeceleration');
+				m = this.vel.x > stillVelX ? 1 : -1; //1 if moving right, -1 if moving left
+				//decelerate move speed
+				if(this.vel.x * m > stillVelX * m + standingSoftMaxSpeed) {
+					this.vel.x -= standingAboveMaxSpeedDeceleration * m / 60;
 				}
-			}
-			else {
-				//moving in the right direction, accelerate up to the max speed
-				if(this.vel.x * m > stillVelX * m) {
-					this.vel.x += runningAcceleration * m / 60;
-				}
-				//moving the wrong way, decelerate
 				else {
-					this.vel.x += runningWrongWayDeceleration * m / 60;
+					this.vel.x -= standingDeceleration * m / 60;
 				}
-				//don't accelerate past the max speed
-				if(this.vel.x * m > stillVelX * m + runningSoftMaxSpeed) {
-					this.vel.x = stillVelX + runningSoftMaxSpeed * m;
-				}
-			}
-		}
-		else if(fighterStates[this.state].physics === 'airborne') {
-			//when airborne, the player can freely move back and forth	
-			var airborneSoftMaxSpeed = this.getFrameDataValue('airborneSoftMaxSpeed');
-			var airborneAcceleration = this.getFrameDataValue('airborneAcceleration');
-			var airborneDeceleration = this.getFrameDataValue('airborneDeceleration');
-			var airborneTurnaroundDeceleration = this.getFrameDataValue('airborneTurnaroundDeceleration');
-			var airborneAboveMaxSpeedDeceleration = this.getFrameDataValue('airborneAboveMaxSpeedDeceleration');
-			m = this.vel.x > stillVelX ? 1 : -1; //1 if moving right, -1 if moving left
-			if(this.vel.x === stillVelX) { m = this.heldHorizontalDir; }
-			//not trying to move
-			if(this.heldHorizontalDir === 0) {
-				//decelerate from above max speed
-				if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
-					this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
-				}
-				//decelerate normally
-				else {
-					this.vel.x -= airborneDeceleration * m / 60;
-				}
-				//don't decelerate past zero
+				//don't decelerate past the still velocity
 				if(this.vel.x * m < stillVelX * m) {
 					this.vel.x = stillVelX;
 				}
 			}
-			//trying to move in the direction of movement
-			else if(this.heldHorizontalDir === m) {
-				//decelerate down to max speed
-				if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
-					this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
-					if(this.vel.x * m < stillVelX * m + airborneSoftMaxSpeed) {
-						this.vel.x = stillVelX + airborneSoftMaxSpeed * m;
+			else if(fighterStates[this.state].physics === 'running') {
+				//when running we assume the player is moving continually in the direction they are facing
+				var runningSoftMaxSpeed = this.getFrameDataValue('runningSoftMaxSpeed');
+				var runningAcceleration = this.getFrameDataValue('runningAcceleration');
+				var runningWrongWayDeceleration = this.getFrameDataValue('runningWrongWayDeceleration');
+				var runningAboveMaxSpeedDeceleration = this.getFrameDataValue('runningAboveMaxSpeedDeceleration');
+				m = this.facing; //1 if facing right, -1 if facing left
+				//running above max speed, decelerate
+				if(this.vel.x * m > stillVelX * m + runningSoftMaxSpeed) {
+					this.vel.x -= runningAboveMaxSpeedDeceleration * m / 60;
+					//don't decelerate past the max speed
+					if(this.vel.x * m < stillVelX * m + runningSoftMaxSpeed) {
+						this.vel.x = stillVelX + runningSoftMaxSpeed * m;
 					}
 				}
-				//accelerate up to max speed
 				else {
-					this.vel.x += airborneAcceleration * m / 60;
+					//moving in the right direction, accelerate up to the max speed
+					if(this.vel.x * m > stillVelX * m) {
+						this.vel.x += runningAcceleration * m / 60;
+					}
+					//moving the wrong way, decelerate
+					else {
+						this.vel.x += runningWrongWayDeceleration * m / 60;
+					}
+					//don't accelerate past the max speed
+					if(this.vel.x * m > stillVelX * m + runningSoftMaxSpeed) {
+						this.vel.x = stillVelX + runningSoftMaxSpeed * m;
+					}
+				}
+			}
+			else if(fighterStates[this.state].physics === 'airborne') {
+				//when airborne, the player can freely move back and forth
+				var airborneSoftMaxSpeed = this.getFrameDataValue('airborneSoftMaxSpeed');
+				var airborneAcceleration = this.getFrameDataValue('airborneAcceleration');
+				var airborneDeceleration = this.getFrameDataValue('airborneDeceleration');
+				var airborneTurnaroundDeceleration = this.getFrameDataValue('airborneTurnaroundDeceleration');
+				var airborneAboveMaxSpeedDeceleration = this.getFrameDataValue('airborneAboveMaxSpeedDeceleration');
+				m = this.vel.x > stillVelX ? 1 : -1; //1 if moving right, -1 if moving left
+				if(this.vel.x === stillVelX) { m = this.heldHorizontalDir; }
+				//not trying to move
+				if(this.heldHorizontalDir === 0) {
+					//decelerate from above max speed
 					if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
-						this.vel.x = stillVelX + airborneSoftMaxSpeed * m;
+						this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
+					}
+					//decelerate normally
+					else {
+						this.vel.x -= airborneDeceleration * m / 60;
+					}
+					//don't decelerate past zero
+					if(this.vel.x * m < stillVelX * m) {
+						this.vel.x = stillVelX;
+					}
+				}
+				//trying to move in the direction of movement
+				else if(this.heldHorizontalDir === m) {
+					//decelerate down to max speed
+					if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
+						this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
+						if(this.vel.x * m < stillVelX * m + airborneSoftMaxSpeed) {
+							this.vel.x = stillVelX + airborneSoftMaxSpeed * m;
+						}
+					}
+					//accelerate up to max speed
+					else {
+						this.vel.x += airborneAcceleration * m / 60;
+						if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
+							this.vel.x = stillVelX + airborneSoftMaxSpeed * m;
+						}
+					}
+				}
+				//m === 1 (moving right), horizontalDir === -1 (trying to move left)
+				//trying to move opposite the direction of movement
+				else {
+					//decelerate if moving above max speed the ~other~ way
+					if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
+						this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
+					}
+					//decelerate normally
+					else {
+						this.vel.x -= airborneTurnaroundDeceleration * m / 60;
+					}
+					//don't let this make us accelerate above max speed
+					if(this.vel.x * m < stillVelX * m - airborneSoftMaxSpeed) {
+						this.vel.x = stillVelX - airborneSoftMaxSpeed * m;
 					}
 				}
 			}
-			//m === 1 (moving right), horizontalDir === -1 (trying to move left)
-			//trying to move opposite the direction of movement
+
+			//always apply gravity, even while grounded
+			var gravity = this.getFrameDataValue('gravity');
+			var softMaxFallSpeed = this.getFrameDataValue('softMaxFallSpeed');
+			var aboveMaxFallSpeedDeceleration = this.getFrameDataValue('aboveMaxFallSpeedDeceleration');
+			if(this.vel.y < stillVelX + softMaxFallSpeed) {
+				this.vel.y += gravity / 60;
+				if(this.vel.y > stillVelY + softMaxFallSpeed) {
+					this.vel.y = stillVelY + softMaxFallSpeed;
+				}
+			}
+			//if falling too fast, slow down
 			else {
-				//decelerate if moving above max speed the ~other~ way
-				if(this.vel.x * m > stillVelX * m + airborneSoftMaxSpeed) {
-					this.vel.x -= airborneAboveMaxSpeedDeceleration * m / 60;
-				}
-				//decelerate normally
-				else {
-					this.vel.x -= airborneTurnaroundDeceleration * m / 60;
-				}
-				//don't let this make us accelerate above max speed
-				if(this.vel.x * m < stillVelX * m - airborneSoftMaxSpeed) {
-					this.vel.x = stillVelX - airborneSoftMaxSpeed * m;
+				this.vel.y -= aboveMaxFallSpeedDeceleration / 60;
+				if(this.vel.y < stillVelY + softMaxFallSpeed) {
+					this.vel.y = stillVelY + softMaxFallSpeed;
 				}
 			}
-		}
 
-		//always apply gravity, even while grounded
-		var gravity = this.getFrameDataValue('gravity');
-		var softMaxFallSpeed = this.getFrameDataValue('softMaxFallSpeed');
-		var aboveMaxFallSpeedDeceleration = this.getFrameDataValue('aboveMaxFallSpeedDeceleration');
-		if(this.vel.y < stillVelX + softMaxFallSpeed) {
-			this.vel.y += gravity / 60;
-			if(this.vel.y > stillVelY + softMaxFallSpeed) {
-				this.vel.y = stillVelY + softMaxFallSpeed;
-			}
+			//ensure the velocity doens't get too crazy, keep it bounded
+			var absoluteMaxHorizontalSpeed = this.getFrameDataValue('absoluteMaxHorizontalSpeed');
+			var absoluteMaxVerticalSpeed = this.getFrameDataValue('absoluteMaxVerticalSpeed');
+			if(this.vel.x > absoluteMaxHorizontalSpeed) { this.vel.x = absoluteMaxHorizontalSpeed; }
+			else if(this.vel.x < -absoluteMaxHorizontalSpeed) { this.vel.x = -absoluteMaxHorizontalSpeed; }
+			if(this.vel.y > absoluteMaxVerticalSpeed) { this.vel.y = absoluteMaxVerticalSpeed; }
+			else if(this.vel.y < -absoluteMaxVerticalSpeed) { this.vel.y = -absoluteMaxVerticalSpeed; }
 		}
-		//if falling too fast, slow down
-		else {
-			this.vel.y -= aboveMaxFallSpeedDeceleration / 60;
-			if(this.vel.y < stillVelY + softMaxFallSpeed) {
-				this.vel.y = stillVelY + softMaxFallSpeed;
-			}
-		}
-
-		//ensure the velocity doens't get too crazy, keep it bounded
-		var absoluteMaxHorizontalSpeed = this.getFrameDataValue('absoluteMaxHorizontalSpeed');
-		var absoluteMaxVerticalSpeed = this.getFrameDataValue('absoluteMaxVerticalSpeed');
-		if(this.vel.x > absoluteMaxHorizontalSpeed) { this.vel.x = absoluteMaxHorizontalSpeed; }
-		else if(this.vel.x < -absoluteMaxHorizontalSpeed) { this.vel.x = -absoluteMaxHorizontalSpeed; }
-		if(this.vel.y > absoluteMaxVerticalSpeed) { this.vel.y = absoluteMaxVerticalSpeed; }
-		else if(this.vel.y < -absoluteMaxVerticalSpeed) { this.vel.y = -absoluteMaxVerticalSpeed; }
 
 		//update position
 		var collisions = [];
 		var moveSteps = Math.max(1, Math.ceil(Math.max(Math.abs(this.vel.x / 60), Math.abs(this.vel.y / 60)) / config.MAX_MOVEMENT_PER_STEP));
 		for(var i = 0; i < moveSteps; i++) {
 			//move in steps to avoid clipping through a platform
-			this.pos.x += (this.vel.x / 60) / moveSteps;
-			this.pos.y += (this.vel.y / 60) / moveSteps;
+			this.pos.x += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.x / 60) / moveSteps;
+			this.pos.y += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.y / 60) / moveSteps;
 			//check for collisions
 			for(var j = 0; j < platforms.length; j++) {
 				if(this.collisionBoxes.left.isOverlapping(platforms[j])) {
@@ -287,7 +299,9 @@ define([
 		}
 
 		//check for state transitions
-		this.checkForStateTransitions();
+		if(this.framesOfFreezeLeft === 0) {
+			this.checkForStateTransitions();
+		}
 
 		//update hitboxes
 		this.recalculateHitBoxes();
@@ -336,16 +350,26 @@ define([
 	};
 	Fighter.prototype.handleHitting = function(hit) {
 		this.recentHits.push(hit);
+		this.framesOfFreezeLeft = hit.hitbox.freeze;
 	};
 	Fighter.prototype.handleBeingHit = function(hit) {
-		this.vel.y = -600; //TODO
+		this.vel.x = hit.hitbox.knockback * Math.sin(hit.hitbox.angle * Math.PI / 180);
+		this.vel.y = hit.hitbox.knockback * Math.cos(hit.hitbox.angle * Math.PI / 180);
+		this.framesOfFreezeLeft = hit.hitbox.freeze;
+		this.framesOfStunLeft = hit.hitbox.stun;
+		this.checkForStateTransitions();
+		this.recalculateHitBoxes();
 	};
 	Fighter.prototype.endOfFrame = function() {};
 	Fighter.prototype.render = function() {
 		//draw sprite
 		var spriteKey = this.getFrameDataValue('spriteKey');
 		var frame = this.getFrameDataValue('spriteFrame');
-		draw.sprite(spriteKey, frame, this.pos.x, this.pos.y, { flip: this.facing < 0 });
+		var jiggle = 0;
+		if(this.framesOfStunLeft > 0 && this.framesOfFreezeLeft > 0) {
+			jiggle = 0.25 * this.framesOfFreezeLeft * ((this.framesOfFreezeLeft % 3) - 1);
+		}
+		draw.sprite(spriteKey, frame, this.pos.x, this.pos.y + jiggle, { flip: this.facing < 0 });
 		if(fighterStates[this.state].isBlocking) {
 			draw.sprite('shield', 2, this.pos.x, this.pos.y);
 		}
@@ -434,14 +458,14 @@ define([
 		var hitboxes = this.getFrameDataValue('hitboxes');
 		if(hitboxes) {
 			for(i = 0; i < hitboxes.length; i++) {
-				this.hitboxes.push(new Hitbox({
-					parent: this,
-					x: this.facing > 0 ? hitboxes[i].x : -hitboxes[i].x - hitboxes[i].width,
-					y: hitboxes[i].y,
-					width: hitboxes[i].width,
-					height: hitboxes[i].height,
-					group: hitboxes[i].group
-				}));
+				var hitboxParams = {};
+				for(var key in hitboxes[i]) {
+					hitboxParams[key] = hitboxes[i][key];
+				}
+				hitboxParams.parent = this;
+				hitboxParams.x = this.facing > 0 ? hitboxes[i].x : -hitboxes[i].x - hitboxes[i].width;
+				hitboxParams.angle = this.facing * hitboxes[i].angle;
+				this.hitboxes.push(new Hitbox(hitboxParams));
 			}
 		}
 

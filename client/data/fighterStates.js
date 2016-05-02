@@ -1,25 +1,27 @@
 define({
 	standing: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return !this.isAirborne();
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'run_start', cancel: true },
-			{ state: 'standing_turnaround_start', cancel: true },
-			{ state: 'block_start', cancel: true },
-			{ state: 'crouch_start', cancel: true },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "run_start", cancel: true },
+			{ state: "standing_turnaround_start", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "crouch_start", cancel: true },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	standing_turnaround_start: {
-		physics: 'running',
+		physics: "running",
 		conditions: function() {
 			return this.heldHorizontalDir === -this.facing || this.hasBufferedHorizontalDir(-this.facing);
 		},
@@ -29,52 +31,58 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'standing_turnaround_start', frameCancel: true },
-			{ state: 'running_turnaround_end' },
-			{ state: 'standing_turnaround_end' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "standing_turnaround_start", frameCancel: true },
+			{ state: "running_turnaround_end" },
+			{ state: "standing_turnaround_end" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	standing_turnaround_end: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'block_start', cancel: true },
-			{ state: 'run_start', frameCancel: true },
-			{ state: 'standing_turnaround_start', cancel: true },
-			{ state: 'standing' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "run_start", frameCancel: true },
+			{ state: "standing_turnaround_start", cancel: true },
+			{ state: "standing" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	running: {
-		physics: 'running',
+		physics: "running",
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'block_start', cancel: true },
-			{ state: 'crouch_start', cancel: true },
-			{ state: 'run_end', cancel: true },
-			{ state: 'running_turnaround_start', cancel: true },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true },
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "crouch_start", cancel: true },
+			{ state: "run_end", cancel: true },
+			{ state: "running_turnaround_start", cancel: true },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
 		]
 	},
 	run_start: {
-		physics: 'running',
+		physics: "running",
 		conditions: function() {
 			return this.heldHorizontalDir === this.facing || this.hasBufferedHorizontalDir(this.facing);
 		},
@@ -83,55 +91,61 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'running_turnaround_start', frameCancel: true },
-			{ state: 'standing_turnaround_start', frameCancel: true },
-			{ state: 'run_end_quick', frameCancel: true },
-			{ state: 'running' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "running_turnaround_start", frameCancel: true },
+			{ state: "standing_turnaround_start", frameCancel: true },
+			{ state: "run_end_quick", frameCancel: true },
+			{ state: "running" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	run_end: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return this.heldHorizontalDir === 0;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'block_start', cancel: true },
-			{ state: 'run_start', frameCancel: true },
-			{ state: 'running_turnaround_start', frameCancel: true },
-			{ state: 'standing_turnaround_start', frameCancel: true },
-			{ state: 'standing' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "run_start", frameCancel: true },
+			{ state: "running_turnaround_start", frameCancel: true },
+			{ state: "standing_turnaround_start", frameCancel: true },
+			{ state: "standing" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	run_end_quick: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return this.heldHorizontalDir === 0;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'standing' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "standing" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	running_turnaround_start: {
-		physics: 'running',
+		physics: "running",
 		conditions: function() {
 			return this.heldHorizontalDir === -this.facing || this.hasBufferedHorizontalDir(-this.facing);
 		},
@@ -141,87 +155,99 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'running_turnaround_end' },
-			{ state: 'standing_turnaround_end' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "running_turnaround_end" },
+			{ state: "standing_turnaround_end" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	running_turnaround_end: {
-		physics: 'running',
+		physics: "running",
 		conditions: function() {
 			return this.heldHorizontalDir === this.facing;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'light_neutral_attack', cancel: true },
-			{ state: 'light_forward_attack', cancel: true },
-			{ state: 'dash', cancel: true },
-			{ state: 'running_turnaround_start', cancel: true },
-			{ state: 'running' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "light_neutral_attack", cancel: true },
+			{ state: "light_forward_attack", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "running_turnaround_start", cancel: true },
+			{ state: "running" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	crouching: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'block_start', cancel: true },
-			{ state: 'crouch_end', cancel: true },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "crouch_end", cancel: true },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	crouch_start: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return this.heldVerticalDir === 1;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'block_start', cancel: true },
-			{ state: 'crouching' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "crouching" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	crouch_end: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return this.heldVerticalDir !== 1;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'block_start', cancel: true },
-			{ state: 'standing_turnaround_start', frameCancel: true },
-			{ state: 'run_start', frameCancel: true },
-			{ state: 'standing' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "block_start", cancel: true },
+			{ state: "standing_turnaround_start", frameCancel: true },
+			{ state: "run_start", frameCancel: true },
+			{ state: "standing" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	blocking: {
-		physics: 'standing',
+		physics: "standing",
 		isBlocking: true,
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'block_end', cancel: true },
-			{ state: 'airborne_block_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "block_end", cancel: true },
+			{ state: "airborne_block_falloff", cancel: true }
 		]
 	},
 	block_start: {
-		physics: 'standing',
+		physics: "standing",
 		isBlocking: true,
 		conditions: function() {
 			return this.isHoldingBlock;
@@ -229,24 +255,28 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'blocking' },
-			{ state: 'airborne_block_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "blocking" },
+			{ state: "airborne_block_falloff", cancel: true }
 		]
 	},
 	block_end: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return !this.isHoldingBlock;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'standing' },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "standing" },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	block_landing: {
-		physics: 'standing',
+		physics: "standing",
 		isBlocking: true,
 		conditions: function() {
 			return !this.isAirborne();
@@ -254,22 +284,26 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'blocking' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "blocking" }
 		]
 	},
 	airborne_blocking: {
-		physics: 'airborne',
+		physics: "airborne",
 		isBlocking: true,
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'block_landing', cancel: true },
-			{ state: 'airborne_block_end', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "block_landing", cancel: true },
+			{ state: "airborne_block_end", cancel: true }
 		]
 	},
 	airborne_block_start: {
-		physics: 'airborne',
+		physics: "airborne",
 		isBlocking: true,
 		conditions: function() {
 			return this.isHoldingBlock;
@@ -277,24 +311,28 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'airborne_blocking' },
-			{ state: 'jump_landing', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_blocking" },
+			{ state: "jump_landing", cancel: true }
 		]
 	},
 	airborne_block_end: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: function() {
 			return !this.isHoldingBlock;
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'airborne' },
-			{ state: 'jump_landing', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne" },
+			{ state: "jump_landing", cancel: true }
 		]
 	},
 	airborne_block_falloff: {
-		physics: 'airborne',
+		physics: "airborne",
 		isBlocking: true,
 		conditions: function() {
 			return this.isAirborne();
@@ -302,73 +340,81 @@ define({
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'airborne_blocking' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_blocking" }
 		]
 	},
 	jump_takeoff: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: function() {
-			return this.hasBufferedAction('JUMP');
+			return this.hasBufferedAction("JUMP");
 		},
 		effectsOnEnter: function(prevState, prevFrames) {
 			this.clearBufferedAction();
 		},
 		effectsOnLeave: function(nextState) {
 			this.platform = null;
-			if(nextState === 'airborne') {
+			if(nextState === "airborne") {
 				this.framesSinceLastJump = 0;
 				var stillVelX = (this.platform ? this.platform.vel.x : 0);
 				var stillVelY = (this.platform ? this.platform.vel.y : 0);
 				//when jumping off the ground, you can get a little horizontal boost to start you out
-				var jumpHorizontalSpeed = this.getFrameDataValue('jumpHorizontalSpeed');
+				var jumpHorizontalSpeed = this.getFrameDataValue("jumpHorizontalSpeed");
 				if(this.heldHorizontalDir !== 0) {
 					var m = this.heldHorizontalDir;
 					if(this.vel.x * m < stillVelX * m + jumpHorizontalSpeed) {
 						this.vel.x = stillVelX + jumpHorizontalSpeed * m;
 					}
 				}
-				this.vel.y = Math.min(this.vel.y, stillVelY - this.getFrameDataValue('jumpSpeed'));
+				this.vel.y = Math.min(this.vel.y, stillVelY - this.getFrameDataValue("jumpSpeed"));
 			}
 		},
 		transitions: [
-			{ state: 'airborne' },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne" },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	jump_landing: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
 			return !this.isAirborne();
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'standing_turnaround_start', frameCancel: true },
-			{ state: 'run_start', frameCancel: true },
-			{ state: 'crouch_start', frameCancel: true },
-			{ state: 'standing' },
-			{ state: 'jump_takeoff', cancel: true },
-			{ state: 'airborne_falloff', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "standing_turnaround_start", frameCancel: true },
+			{ state: "run_start", frameCancel: true },
+			{ state: "crouch_start", frameCancel: true },
+			{ state: "standing" },
+			{ state: "jump_takeoff", cancel: true },
+			{ state: "airborne_falloff", cancel: true }
 		]
 	},
 	airborne: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: null,
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'dash', cancel: true },
-			{ state: 'airborne_block_start', cancel: true },
-			{ state: 'jump_landing', cancel: true },
-			{ state: 'airborne_jump', cancel: true }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "airborne_block_start", cancel: true },
+			{ state: "jump_landing", cancel: true },
+			{ state: "airborne_jump", cancel: true }
 		]
 	},
 	airborne_jump: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: function() {
-			return this.hasBufferedAction('JUMP') &&
-				this.framesSinceLastJump > this.getFrameDataValue('framesBetweenJumps') &&
-				this.airborneJumpsUsed < this.getFrameDataValue('numAirborneJumps');
+			return this.hasBufferedAction("JUMP") &&
+				this.framesSinceLastJump > this.getFrameDataValue("framesBetweenJumps") &&
+				this.airborneJumpsUsed < this.getFrameDataValue("numAirborneJumps");
 		},
 		effectsOnEnter: function(prevState, prevFrames) {
 			this.airborneJumpsUsed++;
@@ -376,14 +422,14 @@ define({
 			var stillVelX = (this.platform ? this.platform.vel.x : 0);
 			var stillVelY = (this.platform ? this.platform.vel.y : 0);
 			//when air jumping, you can get a little horizontal boost to start you out
-			var airborneJumpHorizontalSpeed = this.getFrameDataValue('airborneJumpHorizontalSpeed');
+			var airborneJumpHorizontalSpeed = this.getFrameDataValue("airborneJumpHorizontalSpeed");
 			if(this.heldHorizontalDir !== 0) {
 				var m = this.heldHorizontalDir;
 				if(this.vel.x * m < stillVelX * m + airborneJumpHorizontalSpeed) {
 					this.vel.x = stillVelX + airborneJumpHorizontalSpeed * m;
 				}
 			}
-			this.vel.y = Math.min(this.vel.y, stillVelY - this.getFrameDataValue('airborneJumpSpeed'));
+			this.vel.y = Math.min(this.vel.y, stillVelY - this.getFrameDataValue("airborneJumpSpeed"));
 			if(this.heldHorizontalDir === -this.facing) {
 				this.facing = -this.facing;
 			}
@@ -392,35 +438,39 @@ define({
 			this.framesSinceLastJump = 0;
 		},
 		transitions: [
-			{ state: 'jump_landing', cancel: true },
-			{ state: 'airborne' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true },
+			{ state: "airborne" }
 		]
 	},
 	airborne_falloff: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: function() {
 			return this.isAirborne();
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'dash', cancel: true },
-			{ state: 'airborne_block_start', cancel: true },
-			{ state: 'airborne_jump', cancel: true },
-			{ state: 'airborne' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "dash", cancel: true },
+			{ state: "airborne_block_start", cancel: true },
+			{ state: "airborne_jump", cancel: true },
+			{ state: "airborne" }
 		]
 	},
 	dash: {
-		physics: 'airborne',
+		physics: "airborne",
 		conditions: function() {
-			return this.hasBufferedAction('DASH') &&
-				this.framesSinceLastDash > this.getFrameDataValue('framesBetweenDashes') &&
-				(this.platform || this.airborneJumpsUsed < this.getFrameDataValue('numAirborneJumps'));
+			return this.hasBufferedAction("DASH") &&
+				this.framesSinceLastDash > this.getFrameDataValue("framesBetweenDashes") &&
+				(this.platform || this.airborneJumpsUsed < this.getFrameDataValue("numAirborneJumps"));
 		},
 		effectsOnEnter: function(prevState, prevFrames) {
 			this.facing = this.bufferedActionDir;
 			this.clearBufferedAction();
-			var speed = this.getFrameDataValue(this.platform ? 'dashSpeed' : 'airDashSpeed');
+			var speed = this.getFrameDataValue(this.platform ? "dashSpeed" : "airDashSpeed");
 			var m = this.facing;
 			var stillVelX = (this.platform ? this.platform.vel.x : 0);
 			if(this.vel.x * m < stillVelX + speed) {
@@ -435,27 +485,31 @@ define({
 			this.framesSinceLastDash = 0;
 		},
 		transitions: [
-			{ state: 'standing' },
-			{ state: 'airborne' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "standing" },
+			{ state: "airborne" }
 		]
 	},
 	light_neutral_attack: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
-			return this.hasBufferedAction('LIGHT_NEUTRAL_ATTACK');
+			return this.hasBufferedAction("LIGHT_NEUTRAL_ATTACK");
 		},
 		effectsOnEnter: function(prevState, prevFrames) {
 			this.clearBufferedAction();
 		},
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'standing' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "standing" }
 		]
 	},
 	light_forward_attack: {
-		physics: 'standing',
+		physics: "standing",
 		conditions: function() {
-			return this.hasBufferedAction('LIGHT_FORWARD_ATTACK');
+			return this.hasBufferedAction("LIGHT_FORWARD_ATTACK");
 		},
 		effectsOnEnter: function(prevState, prevFrames) {
 			if(this.bufferedActionDir !== 0) {
@@ -465,7 +519,57 @@ define({
 		},
 		effectsOnLeave: null,
 		transitions: [
-			{ state: 'standing' }
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "standing" }
+		]
+	},
+	"pain": {
+		physics: "standing",
+		conditions: function() {
+			return this.framesOfStunLeft > 0 && !this.isAirborne();
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "airborne_pain", cancel: true },
+			{ state: "pain_recovery", cancel: true }
+		]
+	},
+	"pain_recovery": {
+		physics: "standing",
+		conditions: function() {
+			return this.framesOfStunLeft === 0;
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "airborne_falloff" },
+			{ state: "standing" }
+		]
+	},
+	"airborne_pain": {
+		physics: "airborne",
+		conditions: function() {
+			return this.framesOfStunLeft > 0 && this.isAirborne();
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain_recovery", cancel: true }
+		]
+	},
+	"airborne_pain_recovery": {
+		physics: "airborne",
+		conditions: function() {
+			return this.framesOfStunLeft === 0;
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "jump_landing", cancel: true },
+			{ state: "airborne" }
 		]
 	}
 });

@@ -15,8 +15,8 @@ define([
 ) {
 	function Game() {
 		//create fighters
-		this.player = new Croc({ x: -125, y: -200, facing: 1 });
-		this.fighters = [ new Croc({ x: 275, y: 0, facing: -1 }), this.player ];
+		this.player = new Croc({ x: -300, y: 0, facing: 1 });
+		this.fighters = [ new Croc({ x: -150, y: 0, facing: -1 }), this.player ];
 
 		//create platforms
 		this.level = [
@@ -32,6 +32,9 @@ define([
 		this.levelRightBound = 1150;
 		this.levelTopBound = -750;
 		this.levelBottomBound = 750;
+
+		//adjust camera
+		camera.pos.x = -225;
 
 		//listen for inputs
 		this.bufferedInputs = [];
