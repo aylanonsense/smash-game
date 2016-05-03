@@ -1,4 +1,5 @@
 define({
+	//standing
 	standing: {
 		physics: "standing",
 		conditions: function() {
@@ -11,6 +12,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "run_start", cancel: true },
 			{ state: "standing_turnaround_start", cancel: true },
@@ -35,6 +42,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "standing_turnaround_start", frameCancel: true },
 			{ state: "running_turnaround_end" },
@@ -53,6 +66,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "block_start", cancel: true },
 			{ state: "run_start", frameCancel: true },
@@ -62,6 +81,9 @@ define({
 			{ state: "airborne_falloff", cancel: true }
 		]
 	},
+
+
+	//running
 	running: {
 		physics: "running",
 		conditions: null,
@@ -72,6 +94,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "block_start", cancel: true },
 			{ state: "crouch_start", cancel: true },
@@ -95,6 +123,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "running_turnaround_start", frameCancel: true },
 			{ state: "standing_turnaround_start", frameCancel: true },
@@ -116,6 +150,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "block_start", cancel: true },
 			{ state: "run_start", frameCancel: true },
@@ -138,6 +178,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "standing" },
 			{ state: "jump_takeoff", cancel: true },
@@ -159,6 +205,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "running_turnaround_end" },
 			{ state: "standing_turnaround_end" },
@@ -178,6 +230,12 @@ define({
 			{ state: "airborne_pain", cancel: true },
 			{ state: "light_neutral_attack", cancel: true },
 			{ state: "light_forward_attack", cancel: true },
+			{ state: "light_up_attack", cancel: true },
+			{ state: "light_down_attack", cancel: true },
+			{ state: "heavy_neutral_attack_start", cancel: true },
+			{ state: "heavy_forward_attack_start", cancel: true },
+			{ state: "heavy_up_attack_start", cancel: true },
+			{ state: "heavy_down_attack_start", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "running_turnaround_start", cancel: true },
 			{ state: "running" },
@@ -185,6 +243,9 @@ define({
 			{ state: "airborne_falloff", cancel: true }
 		]
 	},
+
+
+	//crouching
 	crouching: {
 		physics: "standing",
 		conditions: null,
@@ -233,6 +294,9 @@ define({
 			{ state: "airborne_falloff", cancel: true }
 		]
 	},
+
+
+	//blocking
 	blocking: {
 		physics: "standing",
 		isBlocking: true,
@@ -345,6 +409,8 @@ define({
 			{ state: "airborne_blocking" }
 		]
 	},
+
+	//jumping/airborne
 	jump_takeoff: {
 		physics: "airborne",
 		conditions: function() {
@@ -403,10 +469,20 @@ define({
 		transitions: [
 			{ state: "pain", cancel: true },
 			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "airborne_block_start", cancel: true },
-			{ state: "jump_landing", cancel: true },
-			{ state: "airborne_jump", cancel: true }
+			{ state: "airborne_jump", cancel: true },
+			{ state: "airborne_light_neutral_attack", cancel: true },
+			{ state: "airborne_light_forward_attack", cancel: true },
+			{ state: "airborne_light_back_attack", cancel: true },
+			{ state: "airborne_light_up_attack", cancel: true },
+			{ state: "airborne_light_down_attack", cancel: true },
+			{ state: "airborne_heavy_neutral_attack_start", cancel: true },
+			{ state: "airborne_heavy_forward_attack_start", cancel: true },
+			{ state: "airborne_heavy_back_attack_start", cancel: true },
+			{ state: "airborne_heavy_up_attack_start", cancel: true },
+			{ state: "airborne_heavy_down_attack_start", cancel: true }
 		]
 	},
 	airborne_jump: {
@@ -441,6 +517,16 @@ define({
 			{ state: "pain", cancel: true },
 			{ state: "airborne_pain", cancel: true },
 			{ state: "jump_landing", cancel: true },
+			{ state: "airborne_light_neutral_attack", cancel: true },
+			{ state: "airborne_light_forward_attack", cancel: true },
+			{ state: "airborne_light_back_attack", cancel: true },
+			{ state: "airborne_light_up_attack", cancel: true },
+			{ state: "airborne_light_down_attack", cancel: true },
+			{ state: "airborne_heavy_neutral_attack_start", cancel: true },
+			{ state: "airborne_heavy_forward_attack_start", cancel: true },
+			{ state: "airborne_heavy_back_attack_start", cancel: true },
+			{ state: "airborne_heavy_up_attack_start", cancel: true },
+			{ state: "airborne_heavy_down_attack_start", cancel: true },
 			{ state: "airborne" }
 		]
 	},
@@ -454,12 +540,26 @@ define({
 		transitions: [
 			{ state: "pain", cancel: true },
 			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true },
 			{ state: "dash", cancel: true },
 			{ state: "airborne_block_start", cancel: true },
 			{ state: "airborne_jump", cancel: true },
+			{ state: "airborne_light_neutral_attack", cancel: true },
+			{ state: "airborne_light_forward_attack", cancel: true },
+			{ state: "airborne_light_back_attack", cancel: true },
+			{ state: "airborne_light_up_attack", cancel: true },
+			{ state: "airborne_light_down_attack", cancel: true },
+			{ state: "airborne_heavy_neutral_attack_start", cancel: true },
+			{ state: "airborne_heavy_forward_attack_start", cancel: true },
+			{ state: "airborne_heavy_back_attack_start", cancel: true },
+			{ state: "airborne_heavy_up_attack_start", cancel: true },
+			{ state: "airborne_heavy_down_attack_start", cancel: true },
 			{ state: "airborne" }
 		]
 	},
+
+
+	//dashing
 	dash: {
 		physics: "airborne",
 		conditions: function() {
@@ -491,6 +591,9 @@ define({
 			{ state: "airborne" }
 		]
 	},
+
+
+	//grounded light attacks
 	light_neutral_attack: {
 		physics: "standing",
 		conditions: function() {
@@ -503,6 +606,7 @@ define({
 		transitions: [
 			{ state: "pain", cancel: true },
 			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
 			{ state: "standing" }
 		]
 	},
@@ -521,9 +625,542 @@ define({
 		transitions: [
 			{ state: "pain", cancel: true },
 			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
 			{ state: "standing" }
 		]
 	},
+	light_up_attack: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_UP_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "standing" }
+		]
+	},
+	light_down_attack: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_DOWN_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "standing" }
+		]
+	},
+
+
+	//airborne light attacks
+	airborne_light_neutral_attack: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_NEUTRAL_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_light_forward_attack: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_FORWARD_ATTACK") && this.bufferedActionDir === this.facing;
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_light_back_attack: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_FORWARD_ATTACK") && this.bufferedActionDir !== this.facing;
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_light_up_attack: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_UP_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_light_down_attack: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("LIGHT_DOWN_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+
+
+	//grounded heavy attacks
+	heavy_neutral_attack_start: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_NEUTRAL_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_neutral_attack_charge" }
+		]
+	},
+	heavy_neutral_attack_charge: {
+		physics: "standing",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_neutral_attack_end", cancel: true }
+		]
+	},
+	heavy_neutral_attack_end: {
+		physics: "standing",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "standing" }
+		]
+	},
+	heavy_forward_attack_start: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_FORWARD_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			if(this.bufferedActionDir !== 0) {
+				this.facing = this.bufferedActionDir;
+			}
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_forward_attack_charge" }
+		]
+	},
+	heavy_forward_attack_charge: {
+		physics: "standing",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_forward_attack_end", cancel: true }
+		]
+	},
+	heavy_forward_attack_end: {
+		physics: "standing",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "standing" }
+		]
+	},
+	heavy_up_attack_start: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_UP_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_up_attack_charge" }
+		]
+	},
+	heavy_up_attack_end: {
+		physics: "standing",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "standing" }
+		]
+	},
+	heavy_up_attack_charge: {
+		physics: "standing",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_up_attack_end", cancel: true }
+		]
+	},
+	heavy_down_attack_start: {
+		physics: "standing",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_DOWN_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_down_attack_charge" }
+		]
+	},
+	heavy_down_attack_charge: {
+		physics: "standing",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "heavy_down_attack_end", cancel: true }
+		]
+	},
+	heavy_down_attack_end: {
+		physics: "standing",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "airborne_falloff", cancel: true },
+			{ state: "crouching" }
+		]
+	},
+
+
+	//airborne heavy attacks
+	airborne_heavy_neutral_attack_start: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_NEUTRAL_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_neutral_attack_charge" }
+		]
+	},
+	airborne_heavy_neutral_attack_charge: {
+		physics: "airborne",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_neutral_attack_end", cancel: true }
+		]
+	},
+	airborne_heavy_neutral_attack_end: {
+		physics: "airborne",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_heavy_forward_attack_start: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_FORWARD_ATTACK") && this.bufferedActionDir === this.facing;
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_forward_attack_charge" }
+		]
+	},
+	airborne_heavy_forward_attack_charge: {
+		physics: "airborne",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_forward_attack_end", cancel: true }
+		]
+	},
+	airborne_heavy_forward_attack_end: {
+		physics: "airborne",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_heavy_back_attack_start: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_FORWARD_ATTACK") && this.bufferedActionDir !== this.facing;
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_back_attack_charge" }
+		]
+	},
+	airborne_heavy_back_attack_charge: {
+		physics: "airborne",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_back_attack_end", cancel: true }
+		]
+	},
+	airborne_heavy_back_attack_end: {
+		physics: "airborne",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_heavy_up_attack_start: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_UP_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_up_attack_charge" }
+		]
+	},
+	airborne_heavy_up_attack_end: {
+		physics: "airborne",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+	airborne_heavy_up_attack_charge: {
+		physics: "airborne",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_up_attack_end", cancel: true }
+		]
+	},
+	airborne_heavy_down_attack_start: {
+		physics: "airborne",
+		conditions: function() {
+			return this.hasBufferedAction("HEAVY_DOWN_ATTACK");
+		},
+		effectsOnEnter: function(prevState, prevFrames) {
+			this.clearBufferedAction();
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_down_attack_charge" }
+		]
+	},
+	airborne_heavy_down_attack_charge: {
+		physics: "airborne",
+		isCharging: true,
+		conditions: null,
+		effectsOnEnter: function() {
+			this.framesSpentCharging = 0;
+		},
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne_heavy_down_attack_end", cancel: true }
+		]
+	},
+	airborne_heavy_down_attack_end: {
+		physics: "airborne",
+		conditions: function() {
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+		},
+		effectsOnEnter: null,
+		effectsOnLeave: null,
+		transitions: [
+			{ state: "pain", cancel: true },
+			{ state: "airborne_pain", cancel: true },
+			{ state: "jump_landing", cancel: true }, //TODO possibly cancel into attack-specific landing
+			{ state: "airborne" }
+		]
+	},
+
+
+	//pain
 	"pain": {
 		physics: "standing",
 		conditions: function() {

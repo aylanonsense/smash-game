@@ -10,5 +10,17 @@
 			"scale": 2,
 			"center": { "x": 46, "y": 80 }
 		}
+	},
+	"pumpkinHead": {
+		"frameDataFilePath": "/data/pumpkinHeadRawFrameData.json",
+		"hitboxImagePath": "/sprites/pumpkin-head-hitboxes.png",
+		"hurtboxImagePath": "/sprites/pumpkin-head-hurtboxes.png",
+		"sprite": {
+			"imagePath": "/sprites/pumpkin-head.png",
+			"frameWidth": 100,
+			"frameHeight": 100,
+			"scale": 2,
+			"center": { "x": 46, "y": 80 }
+		}
 	}
 }

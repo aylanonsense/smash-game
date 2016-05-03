@@ -34,6 +34,8 @@
 	"absoluteMaxHorizontalSpeed": 9999,
 	"absoluteMaxVerticalSpeed": 9999,
 
+	"maxChargeFrames": 30,
+
 	"states": {
 		"standing": {
 			"animation": [
@@ -222,7 +224,7 @@
 		"light_neutral_attack": {
 			"animation": [
 				{ "spriteFrame": 70, "frames": 7 },
-				{ "spriteFrame": 71, "frames": 7, "hitboxFrame": 1, "hitboxes": [ { "damage": 5, "knockback": 200, "stun": 30, "freeze": 7, "angle": 110} ] },
+				{ "spriteFrame": 71, "frames": 7, "hitboxFrame": 1, "hitboxes": [ { "damage": 5, "knockback": 200, "stun": 30, "freeze": 7, "angle": 110 } ] },
 				{ "spriteFrame": 72, "frames": 7 }
 			]
 		},
@@ -231,6 +233,176 @@
 				{ "spriteFrame": 73, "frames": 12 },
 				{ "spriteFrame": 74, "frames": 12, "hitboxFrame": 4, "hitboxes": [ { "damage": 10, "knockback": 300, "stun": 30, "freeze": 20, "angle": 140 } ] },
 				{ "spriteFrame": 75, "frames": 12, "hitboxFrame": 5, "hitboxes": [ { "damage": 5, "knockback": 300, "stun": 30, "freeze": 7, "angle": 120 } ] }
+			]
+		},
+		"light_up_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"light_down_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_light_neutral_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_light_forward_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_light_back_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_light_up_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_light_down_attack": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_neutral_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_neutral_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_neutral_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_forward_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_forward_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_forward_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_up_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_up_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_up_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_down_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_down_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"heavy_down_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_neutral_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_neutral_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_neutral_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_forward_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_forward_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_forward_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_back_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_back_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_back_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_up_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_up_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_up_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_down_attack_start": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_down_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
+			]
+		},
+		"airborne_heavy_down_attack_end": {
+			"animation": [
+				{ "spriteFrame": 59, "frames": 10 }
 			]
 		},
 		"pain": {

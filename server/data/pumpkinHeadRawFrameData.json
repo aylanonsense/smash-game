@@ -1,0 +1,386 @@
+{
+	"width": 44,
+	"height": 90,
+
+	"gravity": 500,
+	"jumpSpeed": 375,
+	"jumpHorizontalSpeed": 100,
+	"numAirborneJumps": 2,
+	"airborneJumpSpeed": 325,
+	"airborneJumpHorizontalSpeed": 100,
+	"softMaxFallSpeed": 375,
+	"aboveMaxFallSpeedDeceleration": 50,
+	"framesBetweenJumps": 8,
+
+	"standingDeceleration": 800,
+	"standingSoftMaxSpeed": 300,
+	"standingAboveMaxSpeedDeceleration": 800,
+
+	"runningSoftMaxSpeed": 300,
+	"runningAcceleration": 1000,
+	"runningWrongWayDeceleration": 1100,
+	"runningAboveMaxSpeedDeceleration": 1100,
+
+	"airborneSoftMaxSpeed": 250,
+	"airborneAcceleration": 500,
+	"airborneDeceleration": 50,
+	"airborneTurnaroundDeceleration": 500,
+	"airborneAboveMaxSpeedDeceleration": 100,
+
+	"dashSpeed": 400,
+	"airDashSpeed": 400,
+	"framesBetweenDashes": 8,
+
+	"absoluteMaxHorizontalSpeed": 9999,
+	"absoluteMaxVerticalSpeed": 9999,
+
+	"maxChargeFrames": 30,
+
+	"states": {
+		"standing": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 13 },
+				{ "spriteFrame": 1, "frames": 13 }
+			]
+		},
+		"standing_turnaround_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"standing_turnaround_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"running": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"run_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"run_end_quick": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"run_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"running_turnaround_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"running_turnaround_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"crouching": {
+			"animation": [
+				{ "spriteFrame": 2, "frames": 13 },
+				{ "spriteFrame": 3, "frames": 13 }
+			]
+		},
+		"crouch_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"crouch_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"blocking": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"block_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"block_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"block_landing": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_blocking": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_block_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_block_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_block_falloff": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"jump_takeoff": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"jump_landing": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_jump": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_falloff": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"dash": {
+			"airborneSoftMaxSpeed": 0,
+			"airborneAcceleration": 0,
+			"airborneDeceleration": 0,
+			"airborneTurnaroundDeceleration": 0,
+			"airborneAboveMaxSpeedDeceleration": 0,
+			"gravity": 0,
+			"animation": [
+				{ "spriteFrame": 0, "frames": 10 }
+			]
+		},
+		"light_neutral_attack": {
+			"animation": [
+				{ "spriteFrame": 20, "frames": 4 },
+				{ "spriteFrame": 21, "frames": 4, "hitboxFrame": 21, "hitboxes": [ { "freeze": 9, "stun": 30, "knockback": 185, "angle": 160 } ] },
+				{ "spriteFrame": 21, "frames": 4 }
+			]
+		},
+		"light_forward_attack": {
+			"animation": [
+				{ "spriteFrame": 22, "frames": 13 },
+				{ "spriteFrame": 23, "frames": 5, "hitboxFrame": 23, "hitboxes": [ { "freeze": 14, "stun": 30, "knockback": 275, "angle": 110 } ] },
+				{ "spriteFrame": 24, "frames": 5, "hitboxFrame": 24, "hitboxes": [ { "freeze": 14, "stun": 30, "knockback": 400, "angle": 165 } ] },
+				{ "spriteFrame": 24, "frames": 13 }
+			]
+		},
+		"light_up_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"light_down_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_light_neutral_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_light_forward_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_light_back_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_light_up_attack": {
+			"animation": [
+				{ "spriteFrame": 30, "frames": 6 },
+				{ "spriteFrame": 31, "frames": 7, "hitboxFrame": 31, "hitboxes": [ { "freeze": 14, "stun": 30, "knockback": 400, "angle": 180, "group": "A" }, { "freeze": 14, "stun": 30, "knockback": 400, "angle": -150, "group": "A" }, { "freeze": 14, "stun": 30, "knockback": 400, "angle": 150, "group": "A" } ] },
+				{ "spriteFrame": 31, "frames": 3 }
+			]
+		},
+		"airborne_light_down_attack": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_neutral_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_neutral_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_neutral_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_forward_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_forward_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_forward_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_up_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_up_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_up_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_down_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_down_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"heavy_down_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_neutral_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_neutral_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_neutral_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_forward_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_forward_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_forward_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_back_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_back_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_back_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_up_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_up_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_up_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_down_attack_start": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_down_attack_charge": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_heavy_down_attack_end": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"pain": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"pain_recovery": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_pain": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		},
+		"airborne_pain_recovery": {
+			"animation": [
+				{ "spriteFrame": 0, "frames": 1 }
+			]
+		}
+	}
+}

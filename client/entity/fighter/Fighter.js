@@ -30,6 +30,7 @@ define([
 		this.framesSinceLastDash = 0;
 		this.framesOfFreezeLeft = 0;
 		this.framesOfStunLeft = 0;
+		this.framesSpentCharging = 0;
 		this.airborneJumpsUsed = 0;
 		this.platform = null;
 		this.hitboxes = [];
@@ -40,6 +41,7 @@ define([
 		this.heldHorizontalDir = 0;
 		this.heldVerticalDir = 0;
 		this.isHoldingBlock = false;
+		this.isHoldingHeavyAttack = false;
 		//input - buffered actions
 		this.bufferedAction = null;
 		this.bufferedActionDir = null;
@@ -61,6 +63,9 @@ define([
 			this.framesSinceLastJump++;
 			this.framesSinceLastDash++;
 			this.framesOfStunLeft--;
+			if(fighterStates[this.state].isCharging) {
+				this.framesSpentCharging++;
+			}
 		}
 
 		//increment input buffer timers
@@ -110,11 +115,36 @@ define([
 		else if(key === 'JUMP' && isDown) {
 			this.bufferAction('JUMP');
 		}
-		else if(key === 'LIGHT_ATTACK' && isDown && this.heldHorizontalDir === 0) {
-			this.bufferAction('LIGHT_NEUTRAL_ATTACK');
+		else if(key === 'LIGHT_ATTACK' && isDown) {
+			if(this.heldVerticalDir === -1) {
+				this.bufferAction('LIGHT_UP_ATTACK');
+			}
+			else if(this.heldVerticalDir === 1) {
+				this.bufferAction('LIGHT_DOWN_ATTACK');
+			}
+			else if(this.heldHorizontalDir === 0) {
+				this.bufferAction('LIGHT_NEUTRAL_ATTACK');
+			}
+			else {
+				this.bufferAction('LIGHT_FORWARD_ATTACK', this.heldHorizontalDir);
+			}
 		}
-		else if(key === 'LIGHT_ATTACK' && isDown && this.heldHorizontalDir !== 0) {
-			this.bufferAction('LIGHT_FORWARD_ATTACK', this.heldHorizontalDir);
+		else if(key === 'HEAVY_ATTACK') {
+			this.isHoldingHeavyAttack = isDown;
+			if(isDown) {
+				if(this.heldVerticalDir === -1) {
+					this.bufferAction('HEAVY_UP_ATTACK');
+				}
+				else if(this.heldVerticalDir === 1) {
+					this.bufferAction('HEAVY_DOWN_ATTACK');
+				}
+				else if(this.heldHorizontalDir === 0) {
+					this.bufferAction('HEAVY_NEUTRAL_ATTACK');
+				}
+				else {
+					this.bufferAction('HEAVY_FORWARD_ATTACK', this.heldHorizontalDir);
+				}
+			}
 		}
 
 		//after each input, check to see if that changes the state
@@ -367,7 +397,7 @@ define([
 		var frame = this.getFrameDataValue('spriteFrame');
 		var jiggle = 0;
 		if(this.framesOfStunLeft > 0 && this.framesOfFreezeLeft > 0) {
-			jiggle = 0.25 * this.framesOfFreezeLeft * ((this.framesOfFreezeLeft % 3) - 1);
+			jiggle = Math.min(3, this.framesOfFreezeLeft / 2) * ((this.framesOfFreezeLeft % 3) - 1);
 		}
 		draw.sprite(spriteKey, frame, this.pos.x, this.pos.y + jiggle, { flip: this.facing < 0 });
 		if(fighterStates[this.state].isBlocking) {

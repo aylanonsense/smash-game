@@ -2,21 +2,21 @@ define([
 	'json!data/config.json',
 	'display/draw',
 	'display/camera',
-	'entity/fighter/Croc',
+	'entity/fighter/PumpkinHead',
 	'level/Platform',
 	'input/keyboard'
 ], function(
 	config,
 	draw,
 	camera,
-	Croc,
+	PumpkinHead,
 	Platform,
 	keyboard
 ) {
 	function Game() {
 		//create fighters
-		this.player = new Croc({ x: -300, y: 0, facing: 1 });
-		this.fighters = [ new Croc({ x: -150, y: 0, facing: -1 }), this.player ];
+		this.player = new PumpkinHead({ x: -300, y: 0, facing: 1 });
+		this.fighters = [ new PumpkinHead({ x: -150, y: 0, facing: -1 }), this.player ];
 
 		//create platforms
 		this.level = [
@@ -39,7 +39,17 @@ define([
 		//listen for inputs
 		this.bufferedInputs = [];
 		keyboard.on('key-event', function(key, isDown) {
-			this.bufferedInputs.push({ key: key, isDown: isDown, state: keyboard.getState() });
+			if(key === 'TOGGLE_FRAME_RATE' && isDown) {
+				config.FRAMES_PER_SECOND = (config.FRAMES_PER_SECOND === null ? 6 : null);
+			}
+			else if(key === 'TOGGLE_DEBUG_DATA' && isDown) {
+				config.SHOW_HITBOXES = !config.SHOW_HITBOXES;
+				config.SHOW_COLLISION_BOXES = !config.SHOW_COLLISION_BOXES;
+				config.SHOW_FIGHTER_DEBUG_DATA = !config.SHOW_FIGHTER_DEBUG_DATA;
+			}
+			else {
+				this.bufferedInputs.push({ key: key, isDown: isDown, state: keyboard.getState() });
+			}
 		}, this);
 	}
 	Game.prototype.update = function() {
@@ -97,8 +107,8 @@ define([
 		var horizontalDist = Math.max(fighter1.right, fighter2.right) - Math.min(fighter1.left, fighter2.left);
 		var verticalDist = Math.max(fighter1.bottom, fighter2.bottom) - Math.min(fighter1.top, fighter2.top);
 		var zoom = Math.min(1.25, 1 / Math.max(2 * horizontalDist / config.CANVAS_WIDTH, 2 * verticalDist / config.CANVAS_HEIGHT));
-		camera.pos.x = (camera.pos.x * 20 + fighterAvgX) / 21;
-		camera.pos.y = (camera.pos.y * 20 + fighterAvgY) / 21;
+		camera.pos.x = (camera.pos.x * 15 + fighterAvgX) / 16;
+		camera.pos.y = (camera.pos.y * 15 + fighterAvgY) / 16;
 		camera.zoom = (camera.zoom * 20 + zoom) / 21;
 
 		//clear canvas
