@@ -1,13 +1,15 @@
 define([
-	'json!data/config.json',
-	'Game'
+	// 'json!data/config.json',
+	// 'Game',
+	'editor/editor'
 ], function(
-	config,
-	Game
+	// config,
+	// Game,
+	editor
 ) {
 	return function main() {
 		//set up the canvas
-		if(config.RENDER) {
+		/*if(config.RENDER) {
 			canvas.setAttribute('width', config.CANVAS_WIDTH);
 			canvas.setAttribute('height', config.CANVAS_HEIGHT);
 		}
@@ -29,6 +31,9 @@ define([
 				setTimeout(loop, 1000 / config.FRAMES_PER_SECOND);
 			}
 		}
-		scheduleLoop();
+		scheduleLoop();*/
+
+		//run the editor TODO only if the editor is enabled and opened
+		editor.open();
 	};
 });

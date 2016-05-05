@@ -1,0 +1,12 @@
+{
+	"croc": {
+		"imagePath": "/sprites/croc.png",
+		"frameWidth": 100,
+		"frameHeight": 100
+	},
+	"pumpkin-head": {
+		"imagePath": "/sprites/pumpkin-head.png",
+		"frameWidth": 100,
+		"frameHeight": 100
+	}
+}

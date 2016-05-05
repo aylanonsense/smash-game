@@ -6,5 +6,36 @@
 	</head>
 	<body>
 		<canvas id="canvas"></canvas>
+		<div id="editor">
+			<h1>Editor</h1>
+			<div id="menu-page" style="display:none;">
+				<h2>Edit Fighter Animations</h2>
+				<label>Choose a fighter: <select class="fighter-chooser"></select></label><button class="edit-fighter-animations-button">Edit</button>
+				<h2>Edit Default Hurtboxes</h2>
+				<label>Choose a sprite: <select class="sprite-chooser"></select></label><button class="edit-hurtboxes-button">Edit</button>
+			</div>
+			<div id="fighter-animation-editor-page" style="display:none;">
+				<button class="save-button">Save</button>
+				<select class="state-chooser"></select>
+				<div class="clearfix">
+					<div class="sprite-cell-chooser"></div>
+					<div class="animation-editor clearfix"></div>
+					<div class="sprite-hitbox-canvas">
+						<div class="sprite-hitbox-canvas-image"></div>
+						<div class="sprite-hitbox-canvas-hurtboxes"></div>
+					</div>
+				</div>
+			</div>
+			<div id="hurtbox-editor-page" style="display:none;">
+				<button class="save-button">Save</button>
+				<div class="clearfix">
+					<div class="sprite-cell-chooser"></div>
+					<div class="sprite-hitbox-canvas">
+						<div class="sprite-hitbox-canvas-image"></div>
+						<div class="sprite-hitbox-canvas-hurtboxes"></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

@@ -4,7 +4,102 @@ body {
 	background-color: #222;
 	display: flex;
 }
-canvas {
+#canvas {
 	display: block;
 	margin: auto;
+}
+#editor {
+	background-color: white;
+	display: none;
+	margin: auto;
+	width: 100%;
+	min-height: 100%;
+}
+.sprite-cell-chooser {
+	float: left;
+	border: 2px solid #666;
+	margin: 5px;
+	padding-left: 1px;
+}
+.sprite-cell {
+	float: left;
+	border: 1px solid #ddd;
+	margin: 0 0 -1px -1px;
+	background-color: #fff;
+}
+.sprite-cell:hover {
+	background-color: #ffb;
+}
+.sprite-cell.selected {
+	background-color: #ff0;
+}
+.sprite-hitbox-canvas {
+	float: left;
+	background-color: #fff;
+	border: 2px solid #666;
+	margin: 5px;
+	width: 600px;
+	height: 600px;
+	image-rendering: pixelated;
+	position: relative;
+	cursor: pointer;
+	background-size: 6px 6px;
+	background-image: repeating-linear-gradient(0deg, #ddd, #ddd 1px, transparent 1px, transparent 100px),repeating-linear-gradient(-90deg, #ddd, #ddd 1px, transparent 1px, transparent 100px);
+}
+.hurtbox {
+	position: absolute;
+	background-color: rgba(0, 0, 255, 0.5);
+}
+.hurtbox.being-edited {
+	background-color: rgba(0, 100, 255, 0.6);
+}
+.sprite-hitbox-canvas-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.sprite-hitbox-canvas-hurtboxes {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.animation-editor {
+	float: left;
+	border: 2px solid #666;
+	min-width: 82px;
+	height: 62px;
+	margin: 5px;
+	padding-left: 1px;
+}
+.animation-editor-keyframe {
+	width: 40px;
+	height: 60px;
+	border: 1px solid #ddd;
+	margin: 0 0 0 -1px;
+	float: left;
+	cursor: pointer;
+}
+.animation-editor-keyframe:hover {
+	background-color: #ffb;
+}
+.animation-editor-keyframe.selected {
+	background-color: #ff0;
+}
+.animation-editor-image {
+	width: 40px;
+	height: 40px;
+}
+.animation-editor-frames-input {
+	width: 40px;
+	text-align: center;
+	border: none;
 }

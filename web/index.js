@@ -2,6 +2,7 @@
 requirejs.config({
 	baseUrl: '/',
 	paths: {
+		jquery: '/jquery',
 		//requirejs plugins for loading different file types
 		json: '/require/plugin/json',
 		text: '/require/plugin/text'

@@ -32,7 +32,7 @@ define([
 
 	return {
 		on: function(eventName, callback, ctx) {
-			events.on.apply(events, arguments);
+			return events.on.apply(events, arguments);
 		},
 		getState: function() {
 			var stateCopy = {};
