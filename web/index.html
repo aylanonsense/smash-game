@@ -16,13 +16,18 @@
 			</div>
 			<div id="fighter-animation-editor-page" style="display:none;">
 				<button class="save-button">Save</button>
+				<button class="play-animation-button">Play</button>
 				<select class="state-chooser"></select>
 				<div class="clearfix">
 					<div class="sprite-cell-chooser"></div>
 					<div class="animation-editor clearfix"></div>
-					<div class="sprite-hitbox-canvas">
-						<div class="sprite-hitbox-canvas-image"></div>
-						<div class="sprite-hitbox-canvas-hurtboxes"></div>
+					<div class="sprite-hitbox-canvas" draggable="false">
+						<div class="sprite-hitbox-canvas-image" draggable="false"></div>
+						<div class="sprite-hitbox-canvas-hitboxes" draggable="false"></div>
+					</div>
+					<div class="hitbox-properties">
+						<label>Knockback <input type="text" name="knockback"></label>
+						<label>Direction <input type="text" name="direction"></label>
 					</div>
 				</div>
 			</div>
@@ -30,9 +35,9 @@
 				<button class="save-button">Save</button>
 				<div class="clearfix">
 					<div class="sprite-cell-chooser"></div>
-					<div class="sprite-hitbox-canvas">
-						<div class="sprite-hitbox-canvas-image"></div>
-						<div class="sprite-hitbox-canvas-hurtboxes"></div>
+					<div class="sprite-hitbox-canvas" draggable="false">
+						<div class="sprite-hitbox-canvas-image" draggable="false"></div>
+						<div class="sprite-hitbox-canvas-hitboxes" draggable="false"></div>
 					</div>
 				</div>
 			</div>

@@ -21,13 +21,13 @@ define([
 
 	//instantiate components
 	var spriteCellChooser = new SpriteCellChooser({ $ele: $page.find('.sprite-cell-chooser') });
-	var spriteHitboxCanvas = new SpriteHitboxCanvas({ $ele: $page.find('.sprite-hitbox-canvas') });
+	var spriteHitboxCanvas = new SpriteHitboxCanvas({ $ele: $page.find('.sprite-hitbox-canvas'), mode: 'hurtbox' });
 
 	//bind events
 	spriteCellChooser.on('cell-selected', function(col, row) {
 		persistHurtboxesLocally();
 		var hurtboxes = getHurtboxes(spriteHitboxCanvas.imageData, col, row);
-		spriteHitboxCanvas.showCell(col, row, hurtboxes);
+		spriteHitboxCanvas.showCell(col, row, [], hurtboxes);
 	});
 	$saveButton.on('click', function() {
 		persistHurtboxesLocally();

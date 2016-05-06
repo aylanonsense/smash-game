@@ -9,7 +9,7 @@ define([
 ) {
 	function StateChooser(params) {
 		var self = this;
-		this.events = new EventHelper([]);
+		this.events = new EventHelper([ 'change' ]);
 
 		//find elements
 		this.$ele = params.$ele;
@@ -20,6 +20,11 @@ define([
 			html += '<option value="' + fighterStates[i] + '">' + fighterStates[i] + '</option>';
 		}
 		this.$ele.html(html);
+
+		//bind events
+		this.$ele.on('change', function() {
+			self.events.trigger('change');
+		});
 	}
 	StateChooser.prototype.getState = function() {
 		return this.$ele.val();

@@ -48,10 +48,25 @@ body {
 }
 .hurtbox {
 	position: absolute;
+	z-index: 2;
 	background-color: rgba(0, 0, 255, 0.5);
 }
 .hurtbox.being-edited {
-	background-color: rgba(0, 100, 255, 0.6);
+	background-color: rgba(0, 0, 255, 0.3);
+}
+.hurtbox.selected {
+	background-color: rgba(0, 75, 255, 0.7);
+}
+.hitbox {
+	position: absolute;
+	z-index: 3;
+	background-color: rgba(255, 0, 0, 0.5);
+}
+.hitbox.being-edited {
+	background-color: rgba(255, 0, 0, 0.3);
+}
+.hitbox.selected {
+	background-color: rgba(255, 0, 75, 0.7);
 }
 .sprite-hitbox-canvas-image {
 	position: absolute;
@@ -60,7 +75,7 @@ body {
 	bottom: 0;
 	right: 0;
 }
-.sprite-hitbox-canvas-hurtboxes {
+.sprite-hitbox-canvas-hitboxes {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -102,4 +117,21 @@ body {
 	width: 40px;
 	text-align: center;
 	border: none;
+}
+.hitbox-properties {
+	border: 2px solid #666;
+	float: left;
+	padding: 5px;
+	line-height: 1.5em;
+}
+.hitbox-properties label {
+	width: 200px;
+	position: relative;
+	display: block;
+}
+.hitbox-properties input {
+	width: 75px;
+	position: absolute;
+	right: 0;
+	top: 0;
 }

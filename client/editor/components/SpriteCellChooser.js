@@ -56,6 +56,13 @@ define([
 		}
 		return null;
 	};
+	SpriteCellChooser.prototype.selectCell = function(col, row) {
+		this.col = col;
+		this.row = row;
+		var frame = this.row * this.imageData.numCols + this.col;
+		this.$ele.find('.sprite-cell').removeClass('selected');
+		this.$ele.find('.sprite-cell').eq(frame).addClass('selected');
+	};
 	SpriteCellChooser.prototype.on = function(eventName, callback, ctx) {
 		return this.events.on.apply(this.events, arguments);
 	};
