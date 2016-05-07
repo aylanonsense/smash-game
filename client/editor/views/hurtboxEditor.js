@@ -62,10 +62,6 @@ define([
 			spriteHitboxCanvas.loadSprite(imageData);
 			$page.show();
 		},
-		close: function() {
-			persistHurtboxesLocally();
-			$page.hide();
-		},
 		on: function(eventName, callback, ctx) {
 			return events.on.apply(events, arguments);
 		}

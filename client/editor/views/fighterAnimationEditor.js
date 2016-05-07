@@ -142,11 +142,6 @@ define([
 			}
 			$page.show();
 		},
-		close: function() {
-			pauseAnimation();
-			persistHurtboxesLocally();
-			$page.hide();
-		},
 		on: function(eventName, callback, ctx) {
 			return events.on.apply(events, arguments);
 		}

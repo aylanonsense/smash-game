@@ -9,10 +9,65 @@
 		<div id="editor">
 			<h1>Editor</h1>
 			<div id="menu-page" style="display:none;">
+				<h2>Play Game</h2>
+				<label>Choose player character: <select class="player-fighter-chooser"></select></label>
+				<label>Choose NPC character: <select class="npc-fighter-chooser"></select></label>
+				<button class="play-game-button">Play</button>
+				<h2>Edit Fighter Physics</h2>
+				<label>Choose a fighter: <select class="physics-fighter-chooser"></select></label>
+				<button class="edit-fighter-physics-button">Edit</button>
 				<h2>Edit Fighter Animations</h2>
-				<label>Choose a fighter: <select class="fighter-chooser"></select></label><button class="edit-fighter-animations-button">Edit</button>
+				<label>Choose a fighter: <select class="animation-fighter-chooser"></select></label>
+				<button class="edit-fighter-animations-button">Edit</button>
 				<h2>Edit Default Hurtboxes</h2>
-				<label>Choose a sprite: <select class="sprite-chooser"></select></label><button class="edit-hurtboxes-button">Edit</button>
+				<label>Choose a sprite: <select class="sprite-chooser"></select></label>
+				<button class="edit-hurtboxes-button">Edit</button>
+			</div>
+			<div id="fighter-physics-editor-page" style="display:none;">
+				<button class="save-button">Save</button>
+				<select class="state-chooser">
+					<option value="">FIGHTER DEFAULTS</option>
+				</select>
+				<div class="clearfix">
+					<div class="physics-form">
+						<label>width <span class="default-value">--</span> <input type="text" name="width"></label>
+						<label>height <span class="default-value">--</span> <input type="text" name="height"></label>
+						<label>absoluteMaxHorizontalSpeed <span class="default-value">--</span> <input type="text" name="absoluteMaxHorizontalSpeed"></label>
+						<label>absoluteMaxVerticalSpeed <span class="default-value">--</span> <input type="text" name="absoluteMaxVerticalSpeed"></label>
+						<h3>Falling</h3>
+						<label>gravity <span class="default-value">--</span> <input type="text" name="gravity"></label>
+						<label>softMaxFallSpeed <span class="default-value">--</span> <input type="text" name="softMaxFallSpeed"></label>
+						<label>aboveMaxFallSpeedDeceleration <span class="default-value">--</span> <input type="text" name="aboveMaxFallSpeedDeceleration"></label>
+						<h3>Jumping</h3>
+						<label>jumpSpeed <span class="default-value">--</span> <input type="text" name="jumpSpeed"></label>
+						<label>jumpHorizontalSpeed <span class="default-value">--</span> <input type="text" name="jumpHorizontalSpeed"></label>
+						<label>numAirborneJumps <span class="default-value">--</span> <input type="text" name="numAirborneJumps"></label>
+						<label>airborneJumpSpeed <span class="default-value">--</span> <input type="text" name="airborneJumpSpeed"></label>
+						<label>airborneJumpHorizontalSpeed <span class="default-value">--</span> <input type="text" name="airborneJumpHorizontalSpeed"></label>
+						<label>framesBetweenJumps <span class="default-value">--</span> <input type="text" name="framesBetweenJumps"></label>
+						<h3>Standing</h3>
+						<label>standingDeceleration <span class="default-value">--</span> <input type="text" name="standingDeceleration"></label>
+						<label>standingSoftMaxSpeed <span class="default-value">--</span> <input type="text" name="standingSoftMaxSpeed"></label>
+						<label>standingAboveMaxSpeedDeceleration <span class="default-value">--</span> <input type="text" name="standingAboveMaxSpeedDeceleration"></label>
+						<h3>Running</h3>
+						<label>runningSoftMaxSpeed <span class="default-value">--</span> <input type="text" name="runningSoftMaxSpeed"></label>
+						<label>runningAcceleration <span class="default-value">--</span> <input type="text" name="runningAcceleration"></label>
+						<label>runningWrongWayDeceleration <span class="default-value">--</span> <input type="text" name="runningWrongWayDeceleration"></label>
+						<label>runningAboveMaxSpeedDeceleration <span class="default-value">--</span> <input type="text" name="runningAboveMaxSpeedDeceleration"></label>
+						<h3>Airborne</h3>
+						<label>airborneSoftMaxSpeed <span class="default-value">--</span> <input type="text" name="airborneSoftMaxSpeed"></label>
+						<label>airborneAcceleration <span class="default-value">--</span> <input type="text" name="airborneAcceleration"></label>
+						<label>airborneDeceleration <span class="default-value">--</span> <input type="text" name="airborneDeceleration"></label>
+						<label>airborneTurnaroundDeceleration <span class="default-value">--</span> <input type="text" name="airborneTurnaroundDeceleration"></label>
+						<label>airborneAboveMaxSpeedDeceleration <span class="default-value">--</span> <input type="text" name="airborneAboveMaxSpeedDeceleration"></label>
+						<h3>Dashing</h3>
+						<label>dashSpeed <span class="default-value">--</span> <input type="text" name="dashSpeed"></label>
+						<label>airDashSpeed <span class="default-value">--</span> <input type="text" name="airDashSpeed"></label>
+						<label>framesBetweenDashes <span class="default-value">--</span> <input type="text" name="framesBetweenDashes"></label>
+						<h3>Attacking</h3>
+						<label>maxHeavyAttackChargeFrames <span class="default-value">--</span> <input type="text" name="maxHeavyAttackChargeFrames"></label>
+					</div>
+				</div>
 			</div>
 			<div id="fighter-animation-editor-page" style="display:none;">
 				<button class="save-button">Save</button>

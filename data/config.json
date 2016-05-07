@@ -1,3 +1,28 @@
 {
-	"hello": "hi"
+	"RENDER": true,
+	"CANVAS_WIDTH": 800,
+	"CANVAS_HEIGHT": 600,
+
+	"LOG_KEY_EVENTS": false,
+	"KEY_BINDINGS": {
+		"38": "UP", "87": "UP",
+		"37": "LEFT", "65": "LEFT",
+		"40": "DOWN", "83": "DOWN",
+		"39": "RIGHT", "68": "RIGHT",
+		"32": "JUMP",
+		"16": "BLOCK",
+		"90": "LIGHT_ATTACK", "74": "LIGHT_ATTACK",
+		"88": "HEAVY_ATTACK", "75": "HEAVY_ATTACK",
+		"73": "TOGGLE_FRAME_RATE",
+		"79": "TOGGLE_DEBUG_DATA"
+	},
+
+	"FRAMES_PER_SECOND": null,
+
+	"SHOW_HITBOXES": false,
+	"SHOW_COLLISION_BOXES": false,
+	"SHOW_FIGHTER_DEBUG_DATA": false,
+
+	"MAX_MOVEMENT_PER_STEP": 10,
+	"FRAMES_OF_INPUT_BUFFER": 6
 }

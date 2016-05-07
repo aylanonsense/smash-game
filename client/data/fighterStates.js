@@ -781,7 +781,7 @@ define({
 	heavy_neutral_attack_end: {
 		physics: "standing",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -829,7 +829,7 @@ define({
 	heavy_forward_attack_end: {
 		physics: "standing",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -859,7 +859,7 @@ define({
 	heavy_up_attack_end: {
 		physics: "standing",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -919,7 +919,7 @@ define({
 	heavy_down_attack_end: {
 		physics: "standing",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -967,7 +967,7 @@ define({
 	airborne_heavy_neutral_attack_end: {
 		physics: "airborne",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -1012,7 +1012,7 @@ define({
 	airborne_heavy_forward_attack_end: {
 		physics: "airborne",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -1057,7 +1057,7 @@ define({
 	airborne_heavy_back_attack_end: {
 		physics: "airborne",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -1087,7 +1087,7 @@ define({
 	airborne_heavy_up_attack_end: {
 		physics: "airborne",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
@@ -1147,7 +1147,7 @@ define({
 	airborne_heavy_down_attack_end: {
 		physics: "airborne",
 		conditions: function() {
-			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxChargeFrames");
+			return !this.isHoldingHeavyAttack || this.framesSpentCharging >= this.getFrameDataValue("maxHeavyAttackChargeFrames");
 		},
 		effectsOnEnter: null,
 		effectsOnLeave: null,
