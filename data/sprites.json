@@ -8,5 +8,10 @@
 		"imagePath": "/sprites/pumpkin-head.png",
 		"frameWidth": 100,
 		"frameHeight": 100
+	},
+	"cross-dimensional-swordsman": {
+		"imagePath": "/sprites/cross-dimensional-swordsman.png",
+		"frameWidth": 100,
+		"frameHeight": 100
 	}
 }
