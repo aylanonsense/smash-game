@@ -1,7 +1,7 @@
 define([
 	'jquery',
 	'util/EventHelper',
-	'json!data/fighter-states.json'
+	'json!data/fighter-state-list.json'
 ], function(
 	$,
 	EventHelper,

@@ -3,13 +3,19 @@ define([
 	'editor/editor',
 	'display/canvas',
 	'Game',
-	'level/Platform'
+	'level/Platform',
+	'entity/fighter/Fighter',
+	'json!data/fighters.json',
+	'json!data/sprite-hurtboxes.json'
 ], function(
 	config,
 	editor,
 	canvas,
 	Game,
-	Platform
+	Platform,
+	Fighter,
+	fighters,
+	spriteHurtboxes
 ) {
 	return function main() {
 		//run the editor
@@ -34,6 +40,18 @@ define([
 				new Platform({ x: 50, y: -250, width: 125, height: 25 }),
 				new Platform({ x: -50, y: -375, width: 125, height: 22.5 })
 			]);
+			game.addFighter(new Fighter({
+				x: -100,
+				facing: 1,
+				frameData: fighters[playerFighterKey],
+				defaultHurtboxes: spriteHurtboxes[fighters[playerFighterKey].spriteKey]
+			}), true);
+			game.addFighter(new Fighter({
+				x: 100,
+				facing: -1,
+				frameData: fighters[npcFighterKey],
+				defaultHurtboxes: spriteHurtboxes[fighters[npcFighterKey].spriteKey]
+			}), false);
 
 			//kick off the game loop
 			function loop() {

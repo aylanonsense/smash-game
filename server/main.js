@@ -1,20 +1,30 @@
 define([
-	//'build/generateSprites',
-	//'build/generateFighterFrameData',
-	'startServer'
+	'json!data/config.json',
+	'build/generateSprites',
+	'startServer',
+	'util/writeFile'
 ], function(
-	//generateSprites,
-	//generateFighterFrameData,
-	startServer
+	config,
+	generateSprites,
+	startServer,
+	writeFile
 ) {
+	function maybeGenerateSprites(callback) {
+		if(config.GENERATE_SPRITES) {
+			console.log('Generating sprites');
+			generateSprites(function(sprites) {
+				writeFile('/data/generated/sprites.json', sprites, callback);
+			});
+		}
+		else {
+			callback();
+		}
+	}
+
 	return function main() {
-		//console.log('Generating sprites');
-		//generateSprites(function() {
-			//console.log('Generating fighter frame data');
-			//generateFighterFrameData(function() {
-				console.log('Starting server');
-				startServer();
-			//});
-		//});
+		maybeGenerateSprites(function() {
+			console.log('Starting server');
+			startServer();
+		});
 	};
 });

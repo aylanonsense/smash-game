@@ -2,16 +2,17 @@
 	"cross-dimensional-swordsman": {
 		"imagePath": "/sprites/cross-dimensional-swordsman.png",
 		"frameWidth": 100,
-		"frameHeight": 100
+		"frameHeight": 100,
+		"scale": 2,
+		"generateFlippedFrames": true,
+		"center": { "x": 40, "y": 80 }
 	},
-	"croc": {
-		"imagePath": "/sprites/croc.png",
-		"frameWidth": 100,
-		"frameHeight": 100
-	},
-	"pumpkin-head": {
-		"imagePath": "/sprites/pumpkin-head.png",
-		"frameWidth": 100,
-		"frameHeight": 100
+	"shield": {
+		"imagePath": "/sprites/shield.png",
+		"frameWidth": 36,
+		"frameHeight": 36,
+		"scale": 2,
+		"generateFlippedFrames": false,
+		"center": { "x": 0, "y": 0 }
 	}
 }

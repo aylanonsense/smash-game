@@ -1,35 +1,43 @@
 define([
-	'fs',
-	'path',
-	'module',
-	'build/generateFighterSprites',
-	'build/generateNonFighterSprites'
+	'image/createSprite',
+	'json!data/sprites.json'
 ], function(
-	fs,
-	path,
-	module,
-	generateFighterSprites,
-	generateNonFighterSprites
+	createSprite,
+	sprites
 ) {
-	var baseDir = path.join(path.dirname(module.uri), '/../..');
-
-	return function generateSprites(callback) {
-		generateFighterSprites(function(fighterSpriteData) {
-			generateNonFighterSprites(function(spriteData) {
-				//combine the data
-				for(var key in fighterSpriteData) {
-					spriteData[key] = fighterSpriteData[key];
+	function generateSprite(spriteKey, callback) {
+		//generate the sprite using the params in /server/data/sprites.json
+		var generatedSpritePath = '/sprites/generated/' + spriteKey + '.png';
+		createSprite(generatedSpritePath, sprites[spriteKey].imagePath, sprites[spriteKey], function(numCols, numRows) {
+			callback(spriteKey, {
+				imagePath: generatedSpritePath,
+				frameWidth: sprites[spriteKey].frameWidth * sprites[spriteKey].scale,
+				frameHeight: sprites[spriteKey].frameHeight * sprites[spriteKey].scale,
+				numCols: numCols,
+				numRows: numRows,
+				center: {
+					x: sprites[spriteKey].center.x * sprites[spriteKey].scale,
+					y: sprites[spriteKey].center.y * sprites[spriteKey].scale
 				}
-
-				//save the compiled sprite data
-				fs.writeFile(path.join(baseDir, '/client/data/generated/sprites.json'), JSON.stringify(spriteData), function(err) {
-					if(err) { throw err; }
-
-					if(callback) {
-						callback();
-					}
-				});
 			});
 		});
+	}
+
+	return function generateSprites(callback) {
+		//just generate each sprite
+		var spriteKey, generatedSpriteData = {}, numSpritesToGenerate = 0, numSpritesGenerated = 0;
+		for(spriteKey in sprites) {
+			numSpritesToGenerate++;
+		}
+		for(spriteKey in sprites) {
+			generateSprite(spriteKey, checkForFinished);
+		}
+		function checkForFinished(spriteKey, spriteParams) {
+			generatedSpriteData[spriteKey] = spriteParams;
+			numSpritesGenerated++;
+			if(numSpritesGenerated === numSpritesToGenerate && callback) {
+				callback(generatedSpriteData);
+			}
+		}
 	};
 });

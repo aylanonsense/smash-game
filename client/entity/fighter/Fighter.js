@@ -3,17 +3,23 @@ define([
 	'entity/Entity',
 	'util/extend',
 	'display/draw',
+	'data/fighter-states',
+	'json!data/fighter-state-precedence-list.json'
+	/*,
 	'entity/hitbox/Hurtbox',
 	'entity/hitbox/Hitbox',
-	'data/fighterStates'
+	'data/fighterStates'*/
 ], function(
 	config,
 	Entity,
 	extend,
 	draw,
+	fighterStates,
+	fighterStateList
+	/*,
 	Hurtbox,
 	Hitbox,
-	fighterStates
+	fighterStates*/
 ) {
 	function Fighter(params) {
 		Entity.call(this, extend(params, {
@@ -21,21 +27,24 @@ define([
 			height: params.frameData.height
 		}));
 
-		//state
+		//data
 		this.frameData = params.frameData;
+		this.defaultHurtboxes = params.defaultHurtboxes;
+
+		//state
 		this.state = 'standing';
 		this.framesInCurrentState = 0;
 		this.facing = params.facing || 1;
-		this.framesSinceLastJump = 0;
-		this.framesSinceLastDash = 0;
+		/*this.framesSinceLastJump = 0;
+		this.framesSinceLastDash = 0;*/
 		this.framesOfFreezeLeft = 0;
-		this.framesOfStunLeft = 0;
+		/*this.framesOfStunLeft = 0;
 		this.framesSpentCharging = 0;
-		this.airborneJumpsUsed = 0;
+		this.airborneJumpsUsed = 0;*/
 		this.platform = null;
-		this.hitboxes = [];
+		/*this.hitboxes = [];
 		this.hurtboxes = [];
-		this.recentHits = [];
+		this.recentHits = [];*/
 
 		//input
 		this.heldHorizontalDir = 0;
@@ -55,18 +64,18 @@ define([
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function() {
-		if(this.framesOfFreezeLeft > 0) {
+		/*if(this.framesOfFreezeLeft > 0) {
 			this.framesOfFreezeLeft--;
 		}
-		if(this.framesOfFreezeLeft === 0) {
+		if(this.framesOfFreezeLeft === 0) {*/
 			this.framesInCurrentState++;
-			this.framesSinceLastJump++;
+			/*this.framesSinceLastJump++;
 			this.framesSinceLastDash++;
 			this.framesOfStunLeft--;
 			if(fighterStates[this.state].isCharging) {
 				this.framesSpentCharging++;
 			}
-		}
+		}*/
 
 		//increment input buffer timers
 		if(this.bufferedAction) {
@@ -148,9 +157,9 @@ define([
 		}
 
 		//after each input, check to see if that changes the state
-		if(this.framesOfFreezeLeft === 0) {
+		/*if(this.framesOfFreezeLeft === 0) {*/
 			this.checkForStateTransitions();
-		}
+		/*}*/
 	};
 	Fighter.prototype.move = function(platforms) {
 		if(this.framesOfFreezeLeft === 0) {
@@ -264,7 +273,7 @@ define([
 			}
 
 			//always apply gravity, even while grounded
-			var gravity = this.getFrameDataValue('gravity');
+			/*var gravity = this.getFrameDataValue('gravity');
 			var softMaxFallSpeed = this.getFrameDataValue('softMaxFallSpeed');
 			var aboveMaxFallSpeedDeceleration = this.getFrameDataValue('aboveMaxFallSpeedDeceleration');
 			if(this.vel.y < stillVelX + softMaxFallSpeed) {
@@ -279,7 +288,7 @@ define([
 				if(this.vel.y < stillVelY + softMaxFallSpeed) {
 					this.vel.y = stillVelY + softMaxFallSpeed;
 				}
-			}
+			}*/
 
 			//ensure the velocity doens't get too crazy, keep it bounded
 			var absoluteMaxHorizontalSpeed = this.getFrameDataValue('absoluteMaxHorizontalSpeed');
@@ -298,7 +307,7 @@ define([
 			this.pos.x += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.x / 60) / moveSteps;
 			this.pos.y += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.y / 60) / moveSteps;
 			//check for collisions
-			for(var j = 0; j < platforms.length; j++) {
+			/*for(var j = 0; j < platforms.length; j++) {
 				if(this.collisionBoxes.left.isOverlapping(platforms[j])) {
 					if(this.vel.x < 0) { this.vel.x = 0; }
 					this.left = platforms[j].right;
@@ -319,25 +328,25 @@ define([
 					this.top = platforms[j].bottom;
 					collisions.push({ platform: platforms[j], dir: 'top' });
 				}
-			}
+			}*/
 		}
 
-		//handle all collisions that happened during movement
+		/*//handle all collisions that happened during movement
 		this.platform = null;
 		for(i = 0; i < collisions.length; i++) {
 			this.handleCollision(collisions[i].platform, collisions[i].dir);
 		}
 
 		//check for state transitions
-		if(this.framesOfFreezeLeft === 0) {
+		if(this.framesOfFreezeLeft === 0) {*/
 			this.checkForStateTransitions();
-		}
+		/*}
 
 		//update hitboxes
-		this.recalculateHitBoxes();
+		this.recalculateHitBoxes();*/
 	};
 	Fighter.prototype.checkForHit = function(fighter) {
-		var i, j, k;
+		/*var i, j, k;
 
 		//check to see if any hitboxes are hitting the other fighter's hurtboxes
 		for(i = 0; i < this.hitboxes.length; i++) {
@@ -360,35 +369,19 @@ define([
 					}
 				}
 			}
-		}
-
-		/*
-		//if there is no hit, check to see if any hitboxes are hitting the other fighters' hitboxes
-		for(i = 0; i < this.hitboxes.length; i++) {
-			for(j = 0; k < fighter.hitboxes.length; j++) {
-				if(this.hitboxes[i].isOverlapping(fighter.hitboxes[j])) {
-					return {
-						attacker: this,
-						defender: fighter,
-						hitbox: this.hitboxes[i],
-						clank: true
-					};
-				}
-			}
-		}
-		*/
+		}*/
 	};
 	Fighter.prototype.handleHitting = function(hit) {
-		this.recentHits.push(hit);
-		this.framesOfFreezeLeft = hit.hitbox.freeze;
+		/*this.recentHits.push(hit);
+		this.framesOfFreezeLeft = hit.hitbox.freeze;*/
 	};
 	Fighter.prototype.handleBeingHit = function(hit) {
-		this.vel.x = hit.hitbox.knockback * Math.sin(hit.hitbox.angle * Math.PI / 180);
+		/*this.vel.x = hit.hitbox.knockback * Math.sin(hit.hitbox.angle * Math.PI / 180);
 		this.vel.y = hit.hitbox.knockback * Math.cos(hit.hitbox.angle * Math.PI / 180);
 		this.framesOfFreezeLeft = hit.hitbox.freeze;
 		this.framesOfStunLeft = hit.hitbox.stun;
 		this.checkForStateTransitions();
-		this.recalculateHitBoxes();
+		this.recalculateHitBoxes();*/
 	};
 	Fighter.prototype.endOfFrame = function() {};
 	Fighter.prototype.render = function() {
@@ -396,23 +389,23 @@ define([
 		var spriteKey = this.getFrameDataValue('spriteKey');
 		var frame = this.getFrameDataValue('spriteFrame');
 		var jiggle = 0;
-		if(this.framesOfStunLeft > 0 && this.framesOfFreezeLeft > 0) {
+		/*if(this.framesOfStunLeft > 0 && this.framesOfFreezeLeft > 0) {
 			jiggle = Math.min(3, this.framesOfFreezeLeft / 2) * ((this.framesOfFreezeLeft % 3) - 1);
-		}
+		}*/
 		draw.sprite(spriteKey, frame, this.pos.x, this.pos.y + jiggle, { flip: this.facing < 0 });
-		if(fighterStates[this.state].isBlocking) {
+		/*if(fighterStates[this.state].isBlocking) {
 			draw.sprite('shield', 2, this.pos.x, this.pos.y);
-		}
+		}*/
 
 		//draw hurtboxes
-		if(config.SHOW_HITBOXES) {
+		/*if(config.SHOW_HITBOXES) {
 			for(var i = 0; i < this.hurtboxes.length; i++) {
 				this.hurtboxes[i].render();
 			}
 			for(i = 0; i < this.hitboxes.length; i++) {
 				this.hitboxes[i].render();
 			}
-		}
+		}*/
 
 		//draw collision boxes
 		if(config.SHOW_COLLISION_BOXES) {
@@ -431,12 +424,12 @@ define([
 	};
 
 	//helper methods
-	Fighter.prototype.handleCollision = function(platform, dir) {
+	/*Fighter.prototype.handleCollision = function(platform, dir) {
 		if(dir === 'bottom') {
 			this.platform = platform;
 			this.airborneJumpsUsed = 0;
 		}
-	};
+	};*/
 	Fighter.prototype.checkForStateTransitions = function() {
 		var stateHasChanged = this.checkForStateTransition();
 		for(var numTransitions = 0; numTransitions < 10 && stateHasChanged; numTransitions++) {
@@ -448,17 +441,23 @@ define([
 		var animationHasLooped = (this.framesInCurrentState >= this.frameData.states[this.state].totalFrames);
 
 		//then iterate through all possible transitions and see if one is valid
-		var frameCancels = this.getFrameDataValue('frameCancels');
-		for(var i = 0; i < fighterStates[this.state].transitions.length; i++) {
-			var transition = fighterStates[this.state].transitions[i];
-			//check to make sure the transition can be canceled into
-			if(transition.cancel || (!transition.frameCancel && animationHasLooped) ||
-				(transition.frameCancel && frameCancels && frameCancels.indexOf(transition.state) >= 0)) {
-				//check to see if the transition's conditions are satisfied
-				if(!fighterStates[transition.state].conditions || fighterStates[transition.state].conditions.call(this)) {
-					//we can transition to the new state!
-					this.setState(transition.state);
-					return true;
+		var transitions = fighterStates[this.state].transitions;
+		for(var i = 0; i < fighterStateList.length; i++) {
+			var toState = fighterStateList[i];
+			if(transitions[toState] === 'cancel' || (transitions[toState] === 'follow-up' && animationHasLooped)) {
+				// console.log("CAN TRANSITION TO", toState);
+				//a transition is only valid if the fighter's frame data has an animation for that state
+				if(this.frameData.states[toState] &&
+					this.frameData.states[toState].animation &&
+					this.frameData.states[toState].animation.length > 0) {
+					//additionally we need to make sure the state's conditions are all satisfied
+					if(!fighterStates[this.state].conditionsToLeave || fighterStates[this.state].conditionsToLeave.call(this, toState)) {
+						if(!fighterStates[toState].conditionsToEnter || fighterStates[toState].conditionsToEnter.call(this)) {
+							//then we can switch to a new state!
+							this.setState(toState);
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -480,7 +479,7 @@ define([
 			fighterStates[this.state].effectsOnEnter.call(this, prevState, prevFrames);
 		}
 	};
-	Fighter.prototype.recalculateHitBoxes = function() {
+	/*Fighter.prototype.recalculateHitBoxes = function() {
 		var i;
 
 		//create rects out of hitbox data
@@ -513,7 +512,7 @@ define([
 				}));
 			}
 		}
-	};
+	};*/
 	Fighter.prototype.getFrameDataValue = function(key) {
 		var animation = this.getCurrentAnimationFrame();
 		if(typeof animation[key] !== 'undefined') {

@@ -114,10 +114,16 @@ define([
 		return [];
 	}
 	function persistFighterAnimationLocally() {
+		var animation = animationEditor.getAnimationData();
 		if(!fighters[fighterKey].states[state]) {
 			fighters[fighterKey].states[state] = {};
 		}
-		fighters[fighterKey].states[state].animation = animationEditor.getAnimationData();
+		fighters[fighterKey].states[state].animation = animation;
+		var totalFrames = 0;
+		for(var i = 0; i < animation.length; i++) {
+			totalFrames += animation[i].frames;
+		}
+		fighters[fighterKey].states[state].totalFrames = totalFrames;
 	}
 	function playAnimation() {
 		isPlayingAnimation = true;

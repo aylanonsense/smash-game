@@ -2,6 +2,7 @@
 	"RENDER": true,
 	"CANVAS_WIDTH": 800,
 	"CANVAS_HEIGHT": 600,
+	"GENERATE_SPRITES": false,
 
 	"LOG_KEY_EVENTS": false,
 	"KEY_BINDINGS": {

@@ -12,5 +12,6 @@ requirejs.config({
 	}
 });
 require = requirejs;
+
 //run /server/main.js
 requirejs('main')();
