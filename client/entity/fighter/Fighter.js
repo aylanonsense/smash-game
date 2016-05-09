@@ -39,8 +39,8 @@ define([
 		this.framesSinceLastDash = 0;*/
 		this.framesOfFreezeLeft = 0;
 		/*this.framesOfStunLeft = 0;
-		this.framesSpentCharging = 0;
-		this.airborneJumpsUsed = 0;*/
+		this.framesSpentCharging = 0;*/
+		this.airborneJumpsUsed = 0;
 		this.platform = null;
 		/*this.hitboxes = [];
 		this.hurtboxes = [];
@@ -64,18 +64,18 @@ define([
 	}
 	Fighter.prototype = Object.create(Entity.prototype);
 	Fighter.prototype.startOfFrame = function() {
-		/*if(this.framesOfFreezeLeft > 0) {
+		if(this.framesOfFreezeLeft > 0) {
 			this.framesOfFreezeLeft--;
 		}
-		if(this.framesOfFreezeLeft === 0) {*/
+		if(this.framesOfFreezeLeft === 0) {
 			this.framesInCurrentState++;
 			/*this.framesSinceLastJump++;
 			this.framesSinceLastDash++;
 			this.framesOfStunLeft--;
 			if(fighterStates[this.state].isCharging) {
 				this.framesSpentCharging++;
-			}
-		}*/
+			}*/
+		}
 
 		//increment input buffer timers
 		if(this.bufferedAction) {
@@ -157,9 +157,9 @@ define([
 		}
 
 		//after each input, check to see if that changes the state
-		/*if(this.framesOfFreezeLeft === 0) {*/
+		if(this.framesOfFreezeLeft === 0) {
 			this.checkForStateTransitions();
-		/*}*/
+		}
 	};
 	Fighter.prototype.move = function(platforms) {
 		if(this.framesOfFreezeLeft === 0) {
@@ -273,7 +273,7 @@ define([
 			}
 
 			//always apply gravity, even while grounded
-			/*var gravity = this.getFrameDataValue('gravity');
+			var gravity = this.getFrameDataValue('gravity');
 			var softMaxFallSpeed = this.getFrameDataValue('softMaxFallSpeed');
 			var aboveMaxFallSpeedDeceleration = this.getFrameDataValue('aboveMaxFallSpeedDeceleration');
 			if(this.vel.y < stillVelX + softMaxFallSpeed) {
@@ -288,7 +288,7 @@ define([
 				if(this.vel.y < stillVelY + softMaxFallSpeed) {
 					this.vel.y = stillVelY + softMaxFallSpeed;
 				}
-			}*/
+			}
 
 			//ensure the velocity doens't get too crazy, keep it bounded
 			var absoluteMaxHorizontalSpeed = this.getFrameDataValue('absoluteMaxHorizontalSpeed');
@@ -307,7 +307,7 @@ define([
 			this.pos.x += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.x / 60) / moveSteps;
 			this.pos.y += this.framesOfFreezeLeft > 0 ? 0 : (this.vel.y / 60) / moveSteps;
 			//check for collisions
-			/*for(var j = 0; j < platforms.length; j++) {
+			for(var j = 0; j < platforms.length; j++) {
 				if(this.collisionBoxes.left.isOverlapping(platforms[j])) {
 					if(this.vel.x < 0) { this.vel.x = 0; }
 					this.left = platforms[j].right;
@@ -328,22 +328,22 @@ define([
 					this.top = platforms[j].bottom;
 					collisions.push({ platform: platforms[j], dir: 'top' });
 				}
-			}*/
+			}
 		}
 
-		/*//handle all collisions that happened during movement
+		//handle all collisions that happened during movement
 		this.platform = null;
 		for(i = 0; i < collisions.length; i++) {
 			this.handleCollision(collisions[i].platform, collisions[i].dir);
 		}
 
 		//check for state transitions
-		if(this.framesOfFreezeLeft === 0) {*/
+		if(this.framesOfFreezeLeft === 0) {
 			this.checkForStateTransitions();
-		/*}
+		}
 
 		//update hitboxes
-		this.recalculateHitBoxes();*/
+		/*this.recalculateHitBoxes();*/
 	};
 	Fighter.prototype.checkForHit = function(fighter) {
 		/*var i, j, k;
@@ -424,12 +424,12 @@ define([
 	};
 
 	//helper methods
-	/*Fighter.prototype.handleCollision = function(platform, dir) {
+	Fighter.prototype.handleCollision = function(platform, dir) {
 		if(dir === 'bottom') {
 			this.platform = platform;
 			this.airborneJumpsUsed = 0;
 		}
-	};*/
+	};
 	Fighter.prototype.checkForStateTransitions = function() {
 		var stateHasChanged = this.checkForStateTransition();
 		for(var numTransitions = 0; numTransitions < 10 && stateHasChanged; numTransitions++) {
@@ -445,6 +445,9 @@ define([
 		for(var i = 0; i < fighterStateList.length; i++) {
 			var toState = fighterStateList[i];
 			if(transitions[toState] === 'cancel' || (transitions[toState] === 'follow-up' && animationHasLooped)) {
+				if(!fighterStates[toState]) {
+					throw new Error(toState + ' exists in transition list for ' + this.state + ' but not in fighter-states.js');
+				}
 				// console.log("CAN TRANSITION TO", toState);
 				//a transition is only valid if the fighter's frame data has an animation for that state
 				if(this.frameData.states[toState] &&

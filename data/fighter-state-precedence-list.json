@@ -3,11 +3,14 @@
 
 	"standing_turnaround_end",
 
-
 	"running_turnaround_start",
 	"standing_turnaround_start",
 	"run_start",
 	"run_end",
+	"jump_takeoff",
+	"jump_landing",
 	"running",
-	"standing"
+	"standing",
+
+	"airborne"
 ]
