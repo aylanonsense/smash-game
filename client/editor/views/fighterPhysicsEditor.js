@@ -4,6 +4,7 @@ define([
 	'json!data/fighters.json',
 	'editor/components/PhysicsForm',
 	'editor/components/StateChooser',
+	'editor/components/AnimationEditor',
 	'editor/api/saveFighters'
 ], function(
 	$,
@@ -11,6 +12,7 @@ define([
 	fighters,
 	PhysicsForm,
 	StateChooser,
+	AnimationEditor,
 	saveFighters
 ) {
 	var events = new EventHelper([]);
@@ -18,6 +20,7 @@ define([
 	//variables
 	var fighterKey = null;
 	var state = null;
+	var selectedAnimationFrame = null;
 
 	//find elements
 	var $page = $('#fighter-physics-editor-page');
@@ -26,6 +29,7 @@ define([
 	//instantiate components
 	var physicsForm = new PhysicsForm({ $ele: $page.find('.physics-form') });
 	var stateChooser = new StateChooser({ $ele: $page.find('.state-chooser') });
+	var animationEditor = new AnimationEditor({ $ele: $page.find('.animation-editor') });
 
 	//do some logic
 	$page.find('.state-chooser').prepend('<option value="">(fighter defaults)</option');
@@ -35,6 +39,26 @@ define([
 	stateChooser.on('change', function() {
 		persistFighterPhysicsLocally();
 		state = (stateChooser.getState() === '' ? null : stateChooser.getState());
+		animationEditor.clearTimeline();
+		animationEditor.deselectCell();
+		if(state) {
+			physicsForm.loadFormData(fighters[fighterKey].states[state], fighters[fighterKey]);
+			if(fighters[fighterKey].states[state].animation) {
+				animationEditor.setTimeline(fighters[fighterKey].states[state].animation);
+				animationEditor.deselectCell();
+			}
+		}
+		else {
+			physicsForm.loadFormData(fighters[fighterKey]);
+		}
+	});
+	animationEditor.on('cell-selected', function(col, row, hitboxes, hurtboxes, i) {
+		persistFighterPhysicsLocally();
+		selectedAnimationFrame = i;
+		physicsForm.loadFormData(fighters[fighterKey].states[state].animation[selectedAnimationFrame], fighters[fighterKey]);
+	});
+	animationEditor.on('cell-deselected', function() {
+		selectedAnimationFrame = null;
 		if(state) {
 			physicsForm.loadFormData(fighters[fighterKey].states[state], fighters[fighterKey]);
 		}
@@ -56,7 +80,12 @@ define([
 			if(formData[key] === null) {
 				if(state) {
 					if(fighters[fighterKey].states[state]) {
-						delete fighters[fighterKey].states[state][key];
+						if(selectedAnimationFrame === null) {
+							delete fighters[fighterKey].states[state][key];
+						}
+						else if(fighters[fighterKey].states[state].animation) {
+							delete fighters[fighterKey].states[state].animation[selectedAnimationFrame][key];
+						}
 					}
 				}
 				else {
@@ -68,7 +97,12 @@ define([
 					if(!fighters[fighterKey].states[state]) {
 						fighters[fighterKey].states[state] = {};
 					}
-					fighters[fighterKey].states[state][key] = formData[key];
+					if(selectedAnimationFrame === null) {
+						fighters[fighterKey].states[state][key] = formData[key];
+					}
+					else if(fighters[fighterKey].states[state].animation) {
+						fighters[fighterKey].states[state].animation[selectedAnimationFrame][key] = formData[key];
+					}
 				}
 				else {
 					fighters[fighterKey][key] = formData[key];
@@ -76,40 +110,13 @@ define([
 			}
 		}
 	}
-	/*function getHurtboxes(imageData, col, row) {
-		if(spriteHurtboxes[imageData.spriteKey] && spriteHurtboxes[imageData.spriteKey][row * imageData.numCols + col]) {
-			return spriteHurtboxes[imageData.spriteKey][row * imageData.numCols + col];
-		}
-		return [];
-	}
-	function persistFighterAnimationLocally() {
-		if(!fighters[fighterKey].states[state]) {
-			fighters[fighterKey].states[state] = {};
-		}
-		fighters[fighterKey].states[state].animation = animationEditor.getAnimationData();
-	}
-	function playAnimation() {
-		isPlayingAnimation = true;
-		framesLeft = 0;
-		$playAnimationButton.text('Pause');
-	}
-	function pauseAnimation() {
-		isPlayingAnimation = false;
-		framesLeft = 0;
-		$playAnimationButton.text('Play');
-	}*/
 
 	return {
 		open: function(newFighterKey, imageData) {
 			fighterKey = newFighterKey;
 			physicsForm.loadFormData(fighters[fighterKey]);
-			/*spriteCellChooser.loadSprite(imageData);
-			spriteHitboxCanvas.loadSprite(imageData);
 			animationEditor.loadSprite(imageData);
 			animationEditor.clearTimeline();
-			if(fighters[fighterKey].states[state] && fighters[fighterKey].states[state].animation) {
-				animationEditor.setTimeline(fighters[fighterKey].states[state].animation);
-			}*/
 			$page.show();
 		},
 		on: function(eventName, callback, ctx) {

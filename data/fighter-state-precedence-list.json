@@ -1,16 +1,27 @@
 [
+	"airborne_falloff",
+
 	"running_turnaround_end",
 
 	"standing_turnaround_end",
+
+	"jump_takeoff",
+
+	"dash",
+
+	"airborne_jump",
 
 	"running_turnaround_start",
 	"standing_turnaround_start",
 	"run_start",
 	"run_end",
-	"jump_takeoff",
 	"jump_landing",
 	"running",
 	"standing",
+	"crouching",
+	"crouch_end",
+
+	"crouch_start",
 
 	"airborne"
 ]

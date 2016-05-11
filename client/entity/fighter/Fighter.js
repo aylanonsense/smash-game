@@ -4,27 +4,23 @@ define([
 	'util/extend',
 	'display/draw',
 	'data/fighter-states',
-	'json!data/fighter-state-precedence-list.json'
-	/*,
+	'json!data/fighter-state-precedence-list.json',
 	'entity/hitbox/Hurtbox',
-	'entity/hitbox/Hitbox',
-	'data/fighterStates'*/
+	'entity/hitbox/Hitbox'
 ], function(
 	config,
 	Entity,
 	extend,
 	draw,
 	fighterStates,
-	fighterStateList
-	/*,
+	fighterStateList,
 	Hurtbox,
-	Hitbox,
-	fighterStates*/
+	Hitbox
 ) {
 	function Fighter(params) {
 		Entity.call(this, extend(params, {
-			width: params.frameData.width,
-			height: params.frameData.height
+			width: params.frameData.collisionWidth,
+			height: params.frameData.collisionHeight
 		}));
 
 		//data
@@ -35,8 +31,8 @@ define([
 		this.state = 'standing';
 		this.framesInCurrentState = 0;
 		this.facing = params.facing || 1;
-		/*this.framesSinceLastJump = 0;
-		this.framesSinceLastDash = 0;*/
+		this.framesSinceLastJump = 0;
+		this.framesSinceLastDash = 0;
 		this.framesOfFreezeLeft = 0;
 		/*this.framesOfStunLeft = 0;
 		this.framesSpentCharging = 0;*/
@@ -69,9 +65,9 @@ define([
 		}
 		if(this.framesOfFreezeLeft === 0) {
 			this.framesInCurrentState++;
-			/*this.framesSinceLastJump++;
+			this.framesSinceLastJump++;
 			this.framesSinceLastDash++;
-			this.framesOfStunLeft--;
+			/*this.framesOfStunLeft--;
 			if(fighterStates[this.state].isCharging) {
 				this.framesSpentCharging++;
 			}*/
@@ -370,6 +366,7 @@ define([
 				}
 			}
 		}*/
+		return null;
 	};
 	Fighter.prototype.handleHitting = function(hit) {
 		/*this.recentHits.push(hit);
@@ -393,9 +390,6 @@ define([
 			jiggle = Math.min(3, this.framesOfFreezeLeft / 2) * ((this.framesOfFreezeLeft % 3) - 1);
 		}*/
 		draw.sprite(spriteKey, frame, this.pos.x, this.pos.y + jiggle, { flip: this.facing < 0 });
-		/*if(fighterStates[this.state].isBlocking) {
-			draw.sprite('shield', 2, this.pos.x, this.pos.y);
-		}*/
 
 		//draw hurtboxes
 		/*if(config.SHOW_HITBOXES) {
@@ -409,10 +403,18 @@ define([
 
 		//draw collision boxes
 		if(config.SHOW_COLLISION_BOXES) {
-			draw.poly(this.collisionBoxes.left.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.left.top,  this.collisionBoxes.top.left, this.collisionBoxes.top.top,
-				this.collisionBoxes.top.right, this.collisionBoxes.top.top,  this.collisionBoxes.top.right, this.collisionBoxes.right.top,  this.collisionBoxes.right.right, this.collisionBoxes.right.top,
-				this.collisionBoxes.right.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.right.bottom,  this.collisionBoxes.bottom.right, this.collisionBoxes.bottom.bottom,
-				this.collisionBoxes.bottom.left, this.collisionBoxes.bottom.bottom,  this.collisionBoxes.bottom.left, this.collisionBoxes.left.bottom,  this.collisionBoxes.left.left, this.collisionBoxes.left.bottom,
+			draw.poly(this.collisionBoxes.left.left, this.collisionBoxes.left.top,
+				this.collisionBoxes.top.left, this.collisionBoxes.left.top,
+				this.collisionBoxes.top.left, this.collisionBoxes.top.top,
+				this.collisionBoxes.top.right, this.collisionBoxes.top.top,
+				this.collisionBoxes.top.right, this.collisionBoxes.right.top,
+				this.collisionBoxes.right.right, this.collisionBoxes.right.top,
+				this.collisionBoxes.right.right, this.collisionBoxes.right.bottom,
+				this.collisionBoxes.bottom.right, this.collisionBoxes.right.bottom,
+				this.collisionBoxes.bottom.right, this.collisionBoxes.bottom.bottom,
+				this.collisionBoxes.bottom.left, this.collisionBoxes.bottom.bottom,
+				this.collisionBoxes.bottom.left, this.collisionBoxes.left.bottom,
+				this.collisionBoxes.left.left, this.collisionBoxes.left.bottom,
 				{ close: true, stroke: '#fff', thickness: 1 });
 		}
 
@@ -448,7 +450,6 @@ define([
 				if(!fighterStates[toState]) {
 					throw new Error(toState + ' exists in transition list for ' + this.state + ' but not in fighter-states.js');
 				}
-				// console.log("CAN TRANSITION TO", toState);
 				//a transition is only valid if the fighter's frame data has an animation for that state
 				if(this.frameData.states[toState] &&
 					this.frameData.states[toState].animation &&
@@ -529,11 +530,16 @@ define([
 		}
 	};
 	Fighter.prototype.getCurrentAnimationFrame = function() {
-		var frames = this.framesInCurrentState % this.frameData.states[this.state].totalFrames;
-		for(i = 0; i < this.frameData.states[this.state].animation.length; i++) {
-			frames -= this.frameData.states[this.state].animation[i].frames;
-			if(frames < 0) {
-				return this.frameData.states[this.state].animation[i];
+		if(!fighterStates[this.state].loopAnimation && this.framesInCurrentState >= this.frameData.states[this.state].totalFrames) {
+			return this.frameData.states[this.state].animation[this.frameData.states[this.state].animation.length - 1];
+		}
+		else {
+			var frames = this.framesInCurrentState % this.frameData.states[this.state].totalFrames;
+			for(i = 0; i < this.frameData.states[this.state].animation.length; i++) {
+				frames -= this.frameData.states[this.state].animation[i].frames;
+				if(frames < 0) {
+					return this.frameData.states[this.state].animation[i];
+				}
 			}
 		}
 	};

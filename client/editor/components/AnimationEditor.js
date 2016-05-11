@@ -17,9 +17,10 @@ define([
 
 		//bind events
 		this.$ele.on('click', '.animation-editor-keyframe', function() {
-			self.$ele.find('.animation-editor-keyframe').removeClass('selected');
+			var $keyframes = self.$ele.find('.animation-editor-keyframe');
+			$keyframes.removeClass('selected');
 			$(this).addClass('selected');
-			self.events.trigger('cell-selected', $(this).data('col'), $(this).data('row'), $(this).data('hitboxes'), $(this).data('hurtboxes'));
+			self.events.trigger('cell-selected', $(this).data('col'), $(this).data('row'), $(this).data('hitboxes'), $(this).data('hurtboxes'), $keyframes.index(this));
 		});
 		this.$ele.on('dblclick', '.animation-editor-keyframe', function() {
 			$(this).remove();
@@ -44,7 +45,8 @@ define([
 		}).appendTo($keyframe);
 		$('<input type="text">').addClass('animation-editor-frames-input').val('' + frames).appendTo($keyframe);
 		$keyframe.appendTo(this.$ele);
-		this.events.trigger('cell-selected', col, row, $keyframe.data('hitboxes'), $keyframe.data('hurtboxes'));
+		var $keyframes = this.$ele.find('.animation-editor-keyframe');
+		this.events.trigger('cell-selected', col, row, $keyframe.data('hitboxes'), $keyframe.data('hurtboxes'), $keyframes.length - 1);
 	};
 	AnimationEditor.prototype.setHitboxDataForCurrentFrame = function(hitboxes, hurtboxes) {
 		var $keyframe = this.$ele.find('.animation-editor-keyframe.selected');
@@ -78,6 +80,10 @@ define([
 	AnimationEditor.prototype.clearTimeline = function() {
 		this.$ele.empty();
 	};
+	AnimationEditor.prototype.deselectCell = function() {
+		this.$ele.find('.animation-editor-keyframe').removeClass('selected');
+		this.events.trigger('cell-deselected');
+	};
 	AnimationEditor.prototype.on = function(eventName, callback, ctx) {
 		return this.events.on.apply(this.events, arguments);
 	};
@@ -89,7 +95,7 @@ define([
 			$keyframe.removeClass('selected');
 			$keyframe = $($keyframes[i]);
 			$keyframe.addClass('selected');
-			this.events.trigger('cell-selected', $keyframe.data('col'), $keyframe.data('row'), $keyframe.data('hitboxes'), $keyframe.data('hurtboxes'));
+			this.events.trigger('cell-selected', $keyframe.data('col'), $keyframe.data('row'), $keyframe.data('hitboxes'), $keyframe.data('hurtboxes'), i);
 		}
 	};
 	AnimationEditor.prototype.getNumFramesOfCurrentCell = function() {

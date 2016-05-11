@@ -25,13 +25,11 @@
 			</div>
 			<div id="fighter-physics-editor-page" style="display:none;">
 				<button class="save-button">Save</button>
-				<select class="state-chooser">
-					<option value="">FIGHTER DEFAULTS</option>
-				</select>
+				<select class="state-chooser"></select>
 				<div class="clearfix">
 					<div class="physics-form">
-						<label>width <span class="default-value">--</span> <input type="text" name="width"></label>
-						<label>height <span class="default-value">--</span> <input type="text" name="height"></label>
+						<label>collisionWidth <span class="default-value">--</span> <input type="text" name="collisionWidth"></label>
+						<label>collisionHeight <span class="default-value">--</span> <input type="text" name="collisionHeight"></label>
 						<label>absoluteMaxHorizontalSpeed <span class="default-value">--</span> <input type="text" name="absoluteMaxHorizontalSpeed"></label>
 						<label>absoluteMaxVerticalSpeed <span class="default-value">--</span> <input type="text" name="absoluteMaxVerticalSpeed"></label>
 						<h3>Falling</h3>
@@ -67,6 +65,7 @@
 						<h3>Attacking</h3>
 						<label>maxChargeFrames <span class="default-value">--</span> <input type="text" name="maxChargeFrames"></label>
 					</div>
+					<div class="animation-editor"></div>
 				</div>
 			</div>
 			<div id="fighter-animation-editor-page" style="display:none;">
@@ -75,7 +74,7 @@
 				<select class="state-chooser"></select>
 				<div class="clearfix">
 					<div class="sprite-cell-chooser"></div>
-					<div class="animation-editor clearfix"></div>
+					<div class="animation-editor"></div>
 					<div class="sprite-hitbox-canvas" draggable="false">
 						<div class="sprite-hitbox-canvas-image" draggable="false"></div>
 						<div class="sprite-hitbox-canvas-hitboxes" draggable="false"></div>
