@@ -298,6 +298,11 @@ define([
 			this.handleCollision(collisions[i].platform, collisions[i].dir);
 		}
 
+		if (this.pos.y > 850 || this.pos.x < -1300 || this.pos.x > 1300) {
+			this.pos.x = 0;
+			this.pos.y = 0;
+		}
+
 		//check for state transitions
 		if(this.framesOfFreezeLeft === 0) {
 			this.checkForStateTransitions();

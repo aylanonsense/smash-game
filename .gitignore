@@ -34,6 +34,3 @@ node_modules
 
 # OSX files
 .DS_Store
-
-# generated files
-/javascripts/data/generated/*

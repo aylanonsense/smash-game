@@ -165,7 +165,7 @@ define([
 					images[spriteKey].image.onload = function() {
 						images[spriteKey].loaded = true;
 					};
-					images[spriteKey].image.src = sprite.imagePath;
+					images[spriteKey].image.src = BASE_URL + sprite.imagePath;
 				}
 				//once the image has loaded, we can display it
 				//locate the frame on the sprite

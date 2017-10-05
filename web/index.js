@@ -1,10 +1,10 @@
 //configure requirejs
 requirejs.config({
-	baseUrl: '/',
+	baseUrl: BASE_URL,
 	paths: {
 		//requirejs plugins for loading different file types
-		json: '/require/plugin/json',
-		text: '/require/plugin/text'
+		json: 'require/plugin/json',
+		text: 'require/plugin/text'
 	}
 });
 
